@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <PackageId>DockPanelSuite</PackageId>
-    <PackageVersion>3.1.0</PackageVersion>
-    <FileVersion>3.1.0.0</FileVersion>
+    <PackageVersion>3.2.0</PackageVersion>
+    <Version>3.2.0.0</Version>
     <Authors>Weifen Luo and other contributors</Authors>
     <Description>The docking library for .Net Windows Forms development which mimics Visual Studio .Net.</Description>
     <Copyright>(C) 2007-2020 Weifen Luo and other contributors</Copyright>
@@ -23,15 +22,11 @@
       Visual Studio 2015 Themes: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2015/
     </PackageReleaseNotes>
     <UseWindowsForms>true</UseWindowsForms>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <RootNamespace>WeifenLuo.WinFormsUI</RootNamespace>
-    <AssemblyName>WeifenLuo.WinFormsUI</AssemblyName>
-
+    <AssemblyName>WeifenLuo.WinFormsUI.Docking</AssemblyName>
     <ApplicationIcon />
-
     <StartupObject />
-
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 

@@ -31,7 +31,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 else if (dockState == DockState.DockBottom || dockState == DockState.DockBottomAutoHide)
                     return Items[4];
 
-                throw (new ArgumentOutOfRangeException());
+                throw (new ArgumentOutOfRangeException(nameof(dockState)));
             }
         }
     }

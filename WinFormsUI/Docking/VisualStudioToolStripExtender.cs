@@ -8,17 +8,16 @@ namespace WeifenLuo.WinFormsUI.Docking
     [ProvideProperty("EnableVSStyle", typeof(ToolStrip))]
     public partial class VisualStudioToolStripExtender : Component, IExtenderProvider
     {
-        private class ToolStripProperties
+        private sealed class ToolStripProperties
         {
             private VsVersion version = VsVersion.Unknown;
             private readonly ToolStrip strip;
-            private readonly Dictionary<ToolStripItem, string> menuText = new Dictionary<ToolStripItem, string>();
+            private readonly Dictionary<ToolStripItem, string> menuText = new();
             
 
             public ToolStripProperties(ToolStrip toolstrip)
             {
-                if (toolstrip == null) throw new ArgumentNullException(nameof(toolstrip));
-                strip = toolstrip;
+                strip = toolstrip ?? throw new ArgumentNullException(nameof(toolstrip));
 
                 if (strip is MenuStrip)
                     SaveMenuStripText();
@@ -86,7 +85,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public void SetStyle(ToolStrip strip, VsVersion version, ThemeBase theme)
         {
-            ToolStripProperties properties = null;
+            ToolStripProperties properties;
 
             if (!strips.ContainsKey(strip))
             {

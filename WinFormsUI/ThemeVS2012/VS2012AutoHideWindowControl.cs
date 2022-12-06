@@ -49,27 +49,26 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
             DockPadding.All = 0;
             if (DockState == DockState.DockLeftAutoHide)
             {
-                m_splitter.Dock = DockStyle.Right;
+                Splitter.Dock = DockStyle.Right;
             }
             else if (DockState == DockState.DockRightAutoHide)
             {
-                m_splitter.Dock = DockStyle.Left;
+                Splitter.Dock = DockStyle.Left;
             }
             else if (DockState == DockState.DockTopAutoHide)
             {
-                m_splitter.Dock = DockStyle.Bottom;
+                Splitter.Dock = DockStyle.Bottom;
             }
             else if (DockState == DockState.DockBottomAutoHide)
             {
-                m_splitter.Dock = DockStyle.Top;
+                Splitter.Dock = DockStyle.Top;
             }
 
             Rectangle rectDisplaying = DisplayingRectangle;
-            Rectangle rectHidden = new Rectangle(-rectDisplaying.Width, rectDisplaying.Y, rectDisplaying.Width, rectDisplaying.Height);
+            Rectangle rectHidden = new(-rectDisplaying.Width, rectDisplaying.Y, rectDisplaying.Width, rectDisplaying.Height);
             foreach (Control c in Controls)
             {
-                DockPane pane = c as DockPane;
-                if (pane == null)
+                if (c is not DockPane pane)
                     continue;
 
                 if (pane == ActivePane)

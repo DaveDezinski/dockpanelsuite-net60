@@ -15,46 +15,46 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
         }
 
         [ToolboxItem(false)]
-        private class VS2005PanelIndicator : PictureBox, IPanelIndicator
+        private sealed class VS2005PanelIndicator : PictureBox, IPanelIndicator
         {
-            private static Image _imagePanelLeft = Resources.DockIndicator_PanelLeft;
-            private static Image _imagePanelRight = Resources.DockIndicator_PanelRight;
-            private static Image _imagePanelTop = Resources.DockIndicator_PanelTop;
-            private static Image _imagePanelBottom = Resources.DockIndicator_PanelBottom;
-            private static Image _imagePanelFill = Resources.DockIndicator_PanelFill;
-            private static Image _imagePanelLeftActive = Resources.DockIndicator_PanelLeft_Active;
-            private static Image _imagePanelRightActive = Resources.DockIndicator_PanelRight_Active;
-            private static Image _imagePanelTopActive = Resources.DockIndicator_PanelTop_Active;
-            private static Image _imagePanelBottomActive = Resources.DockIndicator_PanelBottom_Active;
-            private static Image _imagePanelFillActive = Resources.DockIndicator_PanelFill_Active;
+            private readonly static Image _imagePanelLeft = Resources.DockIndicator_PanelLeft;
+            private readonly static Image _imagePanelRight = Resources.DockIndicator_PanelRight;
+            private readonly static Image _imagePanelTop = Resources.DockIndicator_PanelTop;
+            private readonly static Image _imagePanelBottom = Resources.DockIndicator_PanelBottom;
+            private readonly static Image _imagePanelFill = Resources.DockIndicator_PanelFill;
+            private readonly static Image _imagePanelLeftActive = Resources.DockIndicator_PanelLeft_Active;
+            private readonly static Image _imagePanelRightActive = Resources.DockIndicator_PanelRight_Active;
+            private readonly static Image _imagePanelTopActive = Resources.DockIndicator_PanelTop_Active;
+            private readonly static Image _imagePanelBottomActive = Resources.DockIndicator_PanelBottom_Active;
+            private readonly static Image _imagePanelFillActive = Resources.DockIndicator_PanelFill_Active;
 
             public VS2005PanelIndicator(DockStyle dockStyle)
             {
-                m_dockStyle = dockStyle;
+                _dockStyle = dockStyle;
                 SizeMode = PictureBoxSizeMode.AutoSize;
                 Image = ImageInactive;
             }
 
-            private DockStyle m_dockStyle;
+            private readonly DockStyle _dockStyle;
             private DockStyle DockStyle
             {
-                get { return m_dockStyle; }
+                get { return _dockStyle; }
             }
 
-            private DockStyle m_status;
+            private DockStyle _status;
             public DockStyle Status
             {
-                get { return m_status; }
+                get { return _status; }
                 set
                 {
                     if (value != DockStyle && value != DockStyle.None)
                         throw new InvalidEnumArgumentException();
 
-                    if (m_status == value)
+                    if (_status == value)
                         return;
 
-                    m_status = value;
-                    IsActivated = (m_status != DockStyle.None);
+                    _status = value;
+                    IsActivated = (_status != DockStyle.None);
                 }
             }
 
@@ -96,13 +96,13 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
                 }
             }
 
-            private bool m_isActivated = false;
+            private bool _isActivated = false;
             private bool IsActivated
             {
-                get { return m_isActivated; }
+                get { return _isActivated; }
                 set
                 {
-                    m_isActivated = value;
+                    _isActivated = value;
                     Image = IsActivated ? ImageActive : ImageInactive;
                 }
             }

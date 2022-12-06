@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using static WeifenLuo.WinFormsUI.Docking.DockPanel;
 using static WeifenLuo.WinFormsUI.Docking.DockPanel.DockDragHandler;
@@ -8,18 +7,15 @@ namespace WeifenLuo.WinFormsUI.Docking
 {
     public sealed class DockPanelExtender
     {
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public interface IDockPaneFactory
         {
             DockPane CreateDockPane(IDockContent content, DockState visibleState, bool show);
 
-            [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
             DockPane CreateDockPane(IDockContent content, FloatWindow floatWindow, bool show);
 
             DockPane CreateDockPane(IDockContent content, DockPane previousPane, DockAlignment alignment,
                                     double proportion, bool show);
 
-            [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
             DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show);
         }
 
@@ -33,7 +29,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             SplitterBase CreateSplitterControl(ISplitterHost host);
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public interface IFloatWindowFactory
         {
             FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane);
@@ -45,19 +40,16 @@ namespace WeifenLuo.WinFormsUI.Docking
             DockWindow CreateDockWindow(DockPanel dockPanel, DockState dockState);
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public interface IDockPaneCaptionFactory
         {
             DockPaneCaptionBase CreateDockPaneCaption(DockPane pane);
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public interface IDockPaneStripFactory
         {
             DockPaneStripBase CreateDockPaneStrip(DockPane pane);
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public interface IAutoHideStripFactory
         {
             AutoHideStripBase CreateAutoHideStrip(DockPanel panel);
@@ -102,10 +94,10 @@ namespace WeifenLuo.WinFormsUI.Docking
                 return new DockPane(content, floatWindow, show);
             }
 
-            public DockPane CreateDockPane(IDockContent content, DockPane prevPane, DockAlignment alignment,
+            public DockPane CreateDockPane(IDockContent content, DockPane previousPane, DockAlignment alignment,
                                            double proportion, bool show)
             {
-                return new DockPane(content, prevPane, alignment, proportion, show);
+                return new DockPane(content, previousPane, alignment, proportion, show);
             }
 
             public DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show)
@@ -133,22 +125,22 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         #endregion
 
-        private IDockPaneFactory m_dockPaneFactory = null;
+        private IDockPaneFactory _dockPaneFactory = null;
 
         public IDockPaneFactory DockPaneFactory
         {
             get
             {
-                if (m_dockPaneFactory == null)
+                if (_dockPaneFactory == null)
                 {
-                    m_dockPaneFactory = new DefaultDockPaneFactory();
+                    _dockPaneFactory = new DefaultDockPaneFactory();
                 }
 
-                return m_dockPaneFactory;
+                return _dockPaneFactory;
             }
             set
             {
-                m_dockPaneFactory = value;
+                _dockPaneFactory = value;
             }
         }
 
@@ -156,22 +148,22 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public IWindowSplitterControlFactory WindowSplitterControlFactory { get; set; }
 
-        private IFloatWindowFactory m_floatWindowFactory = null;
+        private IFloatWindowFactory _floatWindowFactory = null;
 
         public IFloatWindowFactory FloatWindowFactory
         {
             get
             {
-                if (m_floatWindowFactory == null)
+                if (_floatWindowFactory == null)
                 {
-                    m_floatWindowFactory = new DefaultFloatWindowFactory();
+                    _floatWindowFactory = new DefaultFloatWindowFactory();
                 }
 
-                return m_floatWindowFactory;
+                return _floatWindowFactory;
             }
             set
             {
-                m_floatWindowFactory = value;
+                _floatWindowFactory = value;
             }
         }
 
@@ -181,38 +173,38 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public IDockPaneStripFactory DockPaneStripFactory { get; set; }
 
-        private IAutoHideStripFactory m_autoHideStripFactory = null;
+        private IAutoHideStripFactory _autoHideStripFactory = null;
 
         public IAutoHideStripFactory AutoHideStripFactory
         {
             get
             {
-                return m_autoHideStripFactory;
+                return _autoHideStripFactory;
             }
             set
             {
-                if (m_autoHideStripFactory == value)
+                if (_autoHideStripFactory == value)
                 {
                     return;
                 }
 
-                m_autoHideStripFactory = value;
+                _autoHideStripFactory = value;
             }
         }
 
-        private IAutoHideWindowFactory m_autoHideWindowFactory;
+        private IAutoHideWindowFactory _autoHideWindowFactory;
         
         public IAutoHideWindowFactory AutoHideWindowFactory
         {
-            get { return m_autoHideWindowFactory; }
+            get { return _autoHideWindowFactory; }
             set
             {
-                if (m_autoHideWindowFactory == value)
+                if (_autoHideWindowFactory == value)
                 {
                     return;
                 }
 
-                m_autoHideWindowFactory = value;
+                _autoHideWindowFactory = value;
             }
         }
 

@@ -10,8 +10,8 @@ namespace WeifenLuo.WinFormsUI.Docking
     {
         public DockContent()
         {
-            m_dockHandler = new DockContentHandler(this, new GetPersistStringCallback(GetPersistString));
-            m_dockHandler.DockStateChanged += new EventHandler(DockHandler_DockStateChanged);
+            _dockHandler = new DockContentHandler(this, new GetPersistStringCallback(GetPersistString));
+            _dockHandler.DockStateChanged += new EventHandler(DockHandler_DockStateChanged);
             if (PatchController.EnableFontInheritanceFix != true)
             {
                 //Suggested as a fix by bensty regarding form resize
@@ -26,11 +26,11 @@ namespace WeifenLuo.WinFormsUI.Docking
                 this.Font = this.Parent.Font;
         }
 
-        private DockContentHandler m_dockHandler = null;
+        private readonly DockContentHandler _dockHandler = null;
         [Browsable(false)]
         public DockContentHandler DockHandler
         {
-            get { return m_dockHandler; }
+            get { return _dockHandler; }
         }
 
         [LocalizedCategory("Category_Docking")]
@@ -60,20 +60,15 @@ namespace WeifenLuo.WinFormsUI.Docking
             set { DockHandler.AutoHidePortion = value; }
         }
 
-        private string m_tabText = null;
+        private string _tabText = null;
         [Localizable(true)]
         [LocalizedCategory("Category_Docking")]
         [LocalizedDescription("DockContent_TabText_Description")]
         [DefaultValue(null)]
         public string TabText
         {
-            get { return m_tabText; }
-            set { DockHandler.TabText = m_tabText = value; }
-        }
-
-        private bool ShouldSerializeTabText()
-        {
-            return (m_tabText != null);
+            get { return _tabText; }
+            set { DockHandler.TabText = _tabText = value; }
         }
 
         [LocalizedCategory("Category_Docking")]
@@ -158,7 +153,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             set { DockHandler.FloatPane = value; }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         protected virtual string GetPersistString()
         {
             return GetType().ToString();
@@ -269,7 +263,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             DockHandler.Show(dockPanel, dockState);
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters")]
         public void Show(DockPanel dockPanel, Rectangle floatWindowBounds)
         {
             DockHandler.Show(dockPanel, floatWindowBounds);
@@ -285,7 +278,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             DockHandler.Show(previousPane, alignment, proportion);
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters")]
         public void FloatAt(Rectangle floatWindowBounds)
         {
             DockHandler.FloatAt(floatWindowBounds);
@@ -319,7 +311,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             OnDockStateChanged(e);
         }
 
-        private static readonly object DockStateChangedEvent = new object();
+        private static readonly object DockStateChangedEvent = new();
         [LocalizedCategory("Category_PropertyChanged")]
         [LocalizedDescription("Pane_DockStateChanged_Description")]
         public event EventHandler DockStateChanged

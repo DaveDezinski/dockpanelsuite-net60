@@ -15,7 +15,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
         }
 
         [ToolboxItem(false)]
-        private class VS2005AutoHideWindowControl : AutoHideWindowControl
+        private sealed class VS2005AutoHideWindowControl : AutoHideWindowControl
         {
             public VS2005AutoHideWindowControl(DockPanel dockPanel) : base(dockPanel)
             {
@@ -27,32 +27,30 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
                 if (DockState == DockState.DockLeftAutoHide)
                 {
                     DockPadding.Right = 2;
-                    m_splitter.Dock = DockStyle.Right;
+                    Splitter.Dock = DockStyle.Right;
                 }
                 else if (DockState == DockState.DockRightAutoHide)
                 {
                     DockPadding.Left = 2;
-                    m_splitter.Dock = DockStyle.Left;
+                    Splitter.Dock = DockStyle.Left;
                 }
                 else if (DockState == DockState.DockTopAutoHide)
                 {
                     DockPadding.Bottom = 2;
-                    m_splitter.Dock = DockStyle.Bottom;
+                    Splitter.Dock = DockStyle.Bottom;
                 }
                 else if (DockState == DockState.DockBottomAutoHide)
                 {
                     DockPadding.Top = 2;
-                    m_splitter.Dock = DockStyle.Top;
+                    Splitter.Dock = DockStyle.Top;
                 }
 
                 Rectangle rectDisplaying = DisplayingRectangle;
-                Rectangle rectHidden = new Rectangle(-rectDisplaying.Width, rectDisplaying.Y, rectDisplaying.Width, rectDisplaying.Height);
+                Rectangle rectHidden = new(-rectDisplaying.Width, rectDisplaying.Y, rectDisplaying.Width, rectDisplaying.Height);
                 foreach (Control c in Controls)
                 {
-                    DockPane pane = c as DockPane;
-                    if (pane == null)
+                    if (c is not DockPane pane)
                         continue;
-
 
                     if (pane == ActivePane)
                         pane.Bounds = rectDisplaying;

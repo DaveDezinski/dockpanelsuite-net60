@@ -30,11 +30,11 @@ namespace WeifenLuo.WinFormsUI.Docking
             Items.Insert(index, pane);
         }
 
-        internal void Dispose()
+        internal void Clear()
         {
             if (PatchController.EnableNestedDisposalFix == true)
             {
-                List<DockPane> collection = new List<DockPane>(Items);
+                List<DockPane> collection = new(Items);
                 foreach (var dockPane in collection)
                 {
                     dockPane.Close();

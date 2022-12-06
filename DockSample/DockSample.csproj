@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <RootNamespace>DockSample</RootNamespace>
     <AssemblyName>DockSample</AssemblyName>
+    <Title>DockSample</Title>
+    <Company>Weifen Luo</Company>
+    <Copyright>Copyright © Weifen Luo 2007</Copyright>
+    <Product>DockSample</Product>
+    <Version>2.0.0.0</Version>
     <ApplicationIcon />
     <StartupObject />
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\WinFormsUI\WinFormsUI.csproj"/>
   </ItemGroup>
-  
 </Project>

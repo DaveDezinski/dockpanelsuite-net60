@@ -7,18 +7,18 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
     [ToolboxItem(false)]
     public class VS2012DockPaneCaptionInertButton : InertButtonBase
     {
-        private Bitmap _hovered;
-        private Bitmap _normal;
-        private Bitmap _active;
-        private Bitmap _pressed;
-        private Bitmap _hoveredActive;
-        private Bitmap _hoveredAutoHide;
-        private Bitmap _autoHide;
-        private Bitmap _pressedAutoHide;
+        private readonly Bitmap _hovered;
+        private readonly Bitmap _normal;
+        private readonly Bitmap _active;
+        private readonly Bitmap _pressed;
+        private readonly Bitmap _hoveredActive;
+        private readonly Bitmap _hoveredAutoHide;
+        private readonly Bitmap _autoHide;
+        private readonly Bitmap _pressedAutoHide;
 
         public VS2012DockPaneCaptionInertButton(DockPaneCaptionBase dockPaneCaption, Bitmap hovered, Bitmap normal, Bitmap pressed, Bitmap hoveredActive, Bitmap active, Bitmap hoveredAutoHide = null, Bitmap autoHide = null, Bitmap pressedAutoHide = null)
         {
-            m_dockPaneCaption = dockPaneCaption;
+            _dockPaneCaption = dockPaneCaption;
             _hovered = hovered;
             _normal = normal;
             _pressed = pressed;
@@ -30,10 +30,10 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
             RefreshChanges();
         }
 
-        private DockPaneCaptionBase m_dockPaneCaption;
+        private readonly DockPaneCaptionBase _dockPaneCaption;
         private DockPaneCaptionBase DockPaneCaption
         {
-            get { return m_dockPaneCaption; }
+            get { return _dockPaneCaption; }
         }
 
         public bool IsAutoHide

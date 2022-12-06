@@ -8,15 +8,13 @@ namespace WeifenLuo.WinFormsUI.Docking {
         {
             if (rectangle.Width > 0 && rectangle.Height > 0)
             {
-                using (LinearGradientBrush brush = new LinearGradientBrush(rectangle, startColor, endColor, mode))
+                using LinearGradientBrush brush = new(rectangle, startColor, endColor, mode);
+                if (blend != null)
                 {
-                    if (blend != null)
-                    {
-                        brush.Blend = blend;
-                    }
-
-                    graphics.FillRectangle(brush, rectangle);
+                    brush.Blend = blend;
                 }
+
+                graphics.FillRectangle(brush, rectangle);
             }
         }
 
@@ -25,10 +23,8 @@ namespace WeifenLuo.WinFormsUI.Docking {
         {
             if (rectangle.Width > 0 && rectangle.Height > 0)
             {
-                using (LinearGradientBrush brush = new LinearGradientBrush(rectangle, startColor, endColor, mode))
-                {
-                    graphics.FillRectangle(brush, rectangle);
-                }
+                using LinearGradientBrush brush = new(rectangle, startColor, endColor, mode);
+                graphics.FillRectangle(brush, rectangle);
             }
         }
     }

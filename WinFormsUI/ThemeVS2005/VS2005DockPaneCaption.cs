@@ -13,21 +13,21 @@ namespace WeifenLuo.WinFormsUI.Docking
         [ToolboxItem(false)]
         private sealed class InertButton : InertButtonBase
         {
-            private Bitmap m_image, m_imageAutoHide;
+            private readonly Bitmap _image, _imageAutoHide;
 
             public InertButton(VS2005DockPaneCaption dockPaneCaption, Bitmap image, Bitmap imageAutoHide)
                 : base()
             {
-                m_dockPaneCaption = dockPaneCaption;
-                m_image = image;
-                m_imageAutoHide = imageAutoHide;
+                _dockPaneCaption = dockPaneCaption;
+                _image = image;
+                _imageAutoHide = imageAutoHide;
                 RefreshChanges();
             }
 
-            private VS2005DockPaneCaption m_dockPaneCaption;
+            private readonly VS2005DockPaneCaption _dockPaneCaption;
             private VS2005DockPaneCaption DockPaneCaption
             {
-                get { return m_dockPaneCaption; }
+                get { return _dockPaneCaption; }
             }
 
             public bool IsAutoHide
@@ -37,7 +37,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             public override Bitmap Image
             {
-                get { return IsAutoHide ? m_imageAutoHide : m_image; }
+                get { return IsAutoHide ? _imageAutoHide : _image; }
             }
 
             public override Bitmap HoverImage
@@ -52,13 +52,10 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             protected override void OnRefreshChanges()
             {
-                if (DockPaneCaption.DockPane.DockPanel != null)
+                if (DockPaneCaption.DockPane.DockPanel != null && DockPaneCaption.TextColor != ForeColor)
                 {
-                    if (DockPaneCaption.TextColor != ForeColor)
-                    {
-                        ForeColor = DockPaneCaption.TextColor;
-                        Invalidate();
-                    }
+                    ForeColor = DockPaneCaption.TextColor;
+                    Invalidate();
                 }
             }
         }
@@ -80,27 +77,25 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {
-                if (_imageButtonClose == null)
-                    _imageButtonClose = Resources.DockPane_Close;
-
+                _imageButtonClose ??= Resources.DockPane_Close;
                 return _imageButtonClose;
             }
         }
 
-        private InertButton m_buttonClose;
+        private InertButton _buttonClose;
         private InertButton ButtonClose
         {
             get
             {
-                if (m_buttonClose == null)
+                if (_buttonClose == null)
                 {
-                    m_buttonClose = new InertButton(this, ImageButtonClose, ImageButtonClose);
-                    m_toolTip.SetToolTip(m_buttonClose, ToolTipClose);
-                    m_buttonClose.Click += new EventHandler(Close_Click);
-                    Controls.Add(m_buttonClose);
+                    _buttonClose = new InertButton(this, ImageButtonClose, ImageButtonClose);
+                    _toolTip.SetToolTip(_buttonClose, ToolTipClose);
+                    _buttonClose.Click += new EventHandler(Close_Click);
+                    Controls.Add(_buttonClose);
                 }
 
-                return m_buttonClose;
+                return _buttonClose;
             }
         }
 
@@ -109,9 +104,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {
-                if (_imageButtonAutoHide == null)
-                    _imageButtonAutoHide = Resources.DockPane_AutoHide;
-
+                _imageButtonAutoHide ??= Resources.DockPane_AutoHide;
                 return _imageButtonAutoHide;
             }
         }
@@ -121,27 +114,25 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {
-                if (_imageButtonDock == null)
-                    _imageButtonDock = Resources.DockPane_Dock;
-
+                _imageButtonDock ??= Resources.DockPane_Dock;
                 return _imageButtonDock;
             }
         }
 
-        private InertButton m_buttonAutoHide;
+        private InertButton _buttonAutoHide;
         private InertButton ButtonAutoHide
         {
             get
             {
-                if (m_buttonAutoHide == null)
+                if (_buttonAutoHide == null)
                 {
-                    m_buttonAutoHide = new InertButton(this, ImageButtonDock, ImageButtonAutoHide);
-                    m_toolTip.SetToolTip(m_buttonAutoHide, ToolTipAutoHide);
-                    m_buttonAutoHide.Click += new EventHandler(AutoHide_Click);
-                    Controls.Add(m_buttonAutoHide);
+                    _buttonAutoHide = new InertButton(this, ImageButtonDock, ImageButtonAutoHide);
+                    _toolTip.SetToolTip(_buttonAutoHide, ToolTipAutoHide);
+                    _buttonAutoHide.Click += new EventHandler(AutoHide_Click);
+                    Controls.Add(_buttonAutoHide);
                 }
 
-                return m_buttonAutoHide;
+                return _buttonAutoHide;
             }
         }
 
@@ -150,43 +141,41 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {
-                if (_imageButtonOptions == null)
-                    _imageButtonOptions = Resources.DockPane_Option;
-
+                _imageButtonOptions ??= Resources.DockPane_Option;
                 return _imageButtonOptions;
             }
         }
 
-        private InertButton m_buttonOptions;
+        private InertButton _buttonOptions;
         private InertButton ButtonOptions
         {
             get
             {
-                if (m_buttonOptions == null)
+                if (_buttonOptions == null)
                 {
-                    m_buttonOptions = new InertButton(this, ImageButtonOptions, ImageButtonOptions);
-                    m_toolTip.SetToolTip(m_buttonOptions, ToolTipOptions);
-                    m_buttonOptions.Click += new EventHandler(Options_Click);
-                    Controls.Add(m_buttonOptions);
+                    _buttonOptions = new InertButton(this, ImageButtonOptions, ImageButtonOptions);
+                    _toolTip.SetToolTip(_buttonOptions, ToolTipOptions);
+                    _buttonOptions.Click += new EventHandler(Options_Click);
+                    Controls.Add(_buttonOptions);
                 }
-                return m_buttonOptions;
+                return _buttonOptions;
             }
         }
 
-        private IContainer m_components;
+        private readonly IContainer _components;
         private IContainer Components
         {
-            get { return m_components; }
+            get { return _components; }
         }
 
-        private ToolTip m_toolTip;
+        private readonly ToolTip _toolTip;
 
         public VS2005DockPaneCaption(DockPane pane) : base(pane)
         {
             SuspendLayout();
 
-            m_components = new Container();
-            m_toolTip = new ToolTip(Components);
+            _components = new Container();
+            _toolTip = new ToolTip(Components);
 
             ResumeLayout();
         }
@@ -253,8 +242,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_toolTipClose == null)
-                    _toolTipClose = WeifenLuo.WinFormsUI.ThemeVS2005.Strings.DockPaneCaption_ToolTipClose;
+                _toolTipClose ??= ThemeVS2005.Strings.DockPaneCaption_ToolTipClose;
                 return _toolTipClose;
             }
         }
@@ -264,9 +252,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {
-                if (_toolTipOptions == null)
-                    _toolTipOptions = WeifenLuo.WinFormsUI.ThemeVS2005.Strings.DockPaneCaption_ToolTipOptions;
-
+                _toolTipOptions ??= ThemeVS2005.Strings.DockPaneCaption_ToolTipOptions;
                 return _toolTipOptions;
             }
         }
@@ -276,8 +262,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_toolTipAutoHide == null)
-                    _toolTipAutoHide = WeifenLuo.WinFormsUI.ThemeVS2005.Strings.DockPaneCaption_ToolTipAutoHide;
+                _toolTipAutoHide ??= ThemeVS2005.Strings.DockPaneCaption_ToolTipAutoHide;
                 return _toolTipAutoHide;
             }
         }
@@ -311,7 +296,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private static TextFormatFlags _textFormat =
+        private static readonly TextFormatFlags _textFormat =
             TextFormatFlags.SingleLine |
             TextFormatFlags.EndEllipsis |
             TextFormatFlags.VerticalCenter;
@@ -398,7 +383,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         private bool CloseButtonEnabled
         {
-            get	{	return (DockPane.ActiveContent != null)? DockPane.ActiveContent.DockHandler.CloseButton : false;	}
+            get	{	return (DockPane.ActiveContent != null) && DockPane.ActiveContent.DockHandler.CloseButton;	}
         }
 
         /// <summary>
@@ -406,7 +391,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         /// </summary>
         private bool CloseButtonVisible
         {
-            get { return (DockPane.ActiveContent != null) ? DockPane.ActiveContent.DockHandler.CloseButtonVisible : false; }
+            get { return (DockPane.ActiveContent != null) && DockPane.ActiveContent.DockHandler.CloseButtonVisible; }
         }
 
         private bool ShouldShowAutoHideButton
@@ -440,7 +425,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 buttonHeight = height;
             }
             Size buttonSize = new Size(buttonWidth, buttonHeight);
-            int x = rectCaption.X + rectCaption.Width - 1 - ButtonGapRight - m_buttonClose.Width;
+            int x = rectCaption.X + rectCaption.Width - 1 - ButtonGapRight - _buttonClose.Width;
             int y = rectCaption.Y + ButtonGapTop;
             Point point = new Point(x, y);
             ButtonClose.Bounds = DrawHelper.RtlTransform(this, new Rectangle(point, buttonSize));

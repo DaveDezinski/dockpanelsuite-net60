@@ -8,20 +8,22 @@ namespace WeifenLuo.WinFormsUI.Docking
     [ToolboxItem(false)]
     internal class VS2005MultithreadingPanelIndicator : PictureBox, DockPanel.IPanelIndicator
     {
-        private Image _imagePanelLeft;
-        private Image _imagePanelRight;
-        private Image _imagePanelTop;
-        private Image _imagePanelBottom;
-        private Image _imagePanelFill;
-        private Image _imagePanelLeftActive;
-        private Image _imagePanelRightActive;
-        private Image _imagePanelTopActive;
-        private Image _imagePanelBottomActive;
-        private Image _imagePanelFillActive;
+        private readonly Image _imagePanelLeft;
+        private readonly Image _imagePanelRight;
+        private readonly Image _imagePanelTop;
+        private readonly Image _imagePanelBottom;
+        private readonly Image _imagePanelFill;
+        private readonly Image _imagePanelLeftActive;
+        private readonly Image _imagePanelRightActive;
+        private readonly Image _imagePanelTopActive;
+        private readonly Image _imagePanelBottomActive;
+        private readonly Image _imagePanelFillActive;
+
+        private readonly object lockObj = new();
 
         public VS2005MultithreadingPanelIndicator(DockStyle dockStyle)
         {
-            lock (typeof(Resources))
+            lock (lockObj)
             {
                 _imagePanelLeft = (Image)Resources.DockIndicator_PanelLeft.Clone();
                 _imagePanelRight = (Image)Resources.DockIndicator_PanelRight.Clone();
@@ -35,31 +37,31 @@ namespace WeifenLuo.WinFormsUI.Docking
                 _imagePanelFillActive = (Image)Resources.DockIndicator_PanelFill_Active.Clone();
             }
 
-            m_dockStyle = dockStyle;
+            _dockStyle = dockStyle;
             SizeMode = PictureBoxSizeMode.AutoSize;
             Image = ImageInactive;
         }
 
-        private DockStyle m_dockStyle;
+        private readonly DockStyle _dockStyle;
         private DockStyle DockStyle
         {
-            get { return m_dockStyle; }
+            get { return _dockStyle; }
         }
 
-        private DockStyle m_status;
+        private DockStyle _status;
         public DockStyle Status
         {
-            get { return m_status; }
+            get { return _status; }
             set
             {
                 if (value != DockStyle && value != DockStyle.None)
                     throw new InvalidEnumArgumentException();
 
-                if (m_status == value)
+                if (_status == value)
                     return;
 
-                m_status = value;
-                IsActivated = (m_status != DockStyle.None);
+                _status = value;
+                IsActivated = (_status != DockStyle.None);
             }
         }
 
@@ -101,13 +103,13 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private bool m_isActivated = false;
+        private bool _isActivated = false;
         private bool IsActivated
         {
-            get { return m_isActivated; }
+            get { return _isActivated; }
             set
             {
-                m_isActivated = value;
+                _isActivated = value;
                 Image = IsActivated ? ImageActive : ImageInactive;
             }
         }

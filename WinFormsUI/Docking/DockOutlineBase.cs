@@ -5,7 +5,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 {
     public abstract class DockOutlineBase
     {
-        public DockOutlineBase()
+        protected DockOutlineBase()
         {
             Init();
         }
@@ -16,28 +16,28 @@ namespace WeifenLuo.WinFormsUI.Docking
             SaveOldValues();
         }
 
-        private Rectangle m_oldFloatWindowBounds;
+        private Rectangle _oldFloatWindowBounds;
         protected Rectangle OldFloatWindowBounds
         {
-            get { return m_oldFloatWindowBounds; }
+            get { return _oldFloatWindowBounds; }
         }
 
-        private Control m_oldDockTo;
+        private Control _oldDockTo;
         protected Control OldDockTo
         {
-            get { return m_oldDockTo; }
+            get { return _oldDockTo; }
         }
 
-        private DockStyle m_oldDock;
+        private DockStyle _oldDock;
         protected DockStyle OldDock
         {
-            get { return m_oldDock; }
+            get { return _oldDock; }
         }
 
-        private int m_oldContentIndex;
+        private int _oldContentIndex;
         protected int OldContentIndex
         {
-            get { return m_oldContentIndex; }
+            get { return _oldContentIndex; }
         }
 
         protected bool SameAsOldValue
@@ -51,48 +51,43 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private Rectangle m_floatWindowBounds;
+        private Rectangle _floatWindowBounds;
         public Rectangle FloatWindowBounds
         {
-            get { return m_floatWindowBounds; }
+            get { return _floatWindowBounds; }
         }
 
-        private Control m_dockTo;
+        private Control _dockTo;
         public Control DockTo
         {
-            get { return m_dockTo; }
+            get { return _dockTo; }
         }
 
-        private DockStyle m_dock;
+        private DockStyle _dock;
         public DockStyle Dock
         {
-            get { return m_dock; }
+            get { return _dock; }
         }
 
-        private int m_contentIndex;
+        private int _contentIndex;
         public int ContentIndex
         {
-            get { return m_contentIndex; }
+            get { return _contentIndex; }
         }
 
         public bool FlagFullEdge
         {
-            get { return m_contentIndex != 0; }
+            get { return _contentIndex != 0; }
         }
 
-        private bool m_flagTestDrop = false;
-        public bool FlagTestDrop
-        {
-            get { return m_flagTestDrop; }
-            set { m_flagTestDrop = value; }
-        }
+        public bool FlagTestDrop { get; set; } = false;
 
         private void SaveOldValues()
         {
-            m_oldDockTo = m_dockTo;
-            m_oldDock = m_dock;
-            m_oldContentIndex = m_contentIndex;
-            m_oldFloatWindowBounds = m_floatWindowBounds;
+            _oldDockTo = _dockTo;
+            _oldDock = _dock;
+            _oldContentIndex = _contentIndex;
+            _oldFloatWindowBounds = _floatWindowBounds;
         }
 
         protected abstract void OnShow();
@@ -101,19 +96,19 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         private void SetValues(Rectangle floatWindowBounds, Control dockTo, DockStyle dock, int contentIndex)
         {
-            m_floatWindowBounds = floatWindowBounds;
-            m_dockTo = dockTo;
-            m_dock = dock;
-            m_contentIndex = contentIndex;
+            _floatWindowBounds = floatWindowBounds;
+            _dockTo = dockTo;
+            _dock = dock;
+            _contentIndex = contentIndex;
             FlagTestDrop = true;
         }
 
         private void TestChange()
         {
-            if (m_floatWindowBounds != m_oldFloatWindowBounds ||
-                m_dockTo != m_oldDockTo ||
-                m_dock != m_oldDock ||
-                m_contentIndex != m_oldContentIndex)
+            if (_floatWindowBounds != _oldFloatWindowBounds ||
+                _dockTo != _oldDockTo ||
+                _dock != _oldDock ||
+                _contentIndex != _oldContentIndex)
                 OnShow();
         }
 

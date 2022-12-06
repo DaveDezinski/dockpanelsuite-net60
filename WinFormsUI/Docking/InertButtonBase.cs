@@ -19,30 +19,30 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public abstract Bitmap Image { get; }
 
-        private bool m_isMouseOver = false;
+        private bool _isMouseOver = false;
         protected bool IsMouseOver
         {
-            get { return m_isMouseOver; }
+            get { return _isMouseOver; }
             private set
             {
-                if (m_isMouseOver == value)
+                if (_isMouseOver == value)
                     return;
 
-                m_isMouseOver = value;
+                _isMouseOver = value;
                 Invalidate();
             }
         }
 
-        private bool m_isMouseDown = false;
+        private bool _isMouseDown = false;
         protected bool IsMouseDown
         {
-            get { return m_isMouseDown; }
+            get { return _isMouseDown; }
             private set
             {
-                if (m_isMouseDown == value)
+                if (_isMouseDown == value)
                     return;
 
-                m_isMouseDown = value;
+                _isMouseDown = value;
                 Invalidate();
             }
         }
@@ -115,21 +115,23 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             if (IsMouseOver && Enabled)
             {
-                using (Pen pen = new Pen(ForeColor))
-                {
-                    e.Graphics.DrawRectangle(pen, Rectangle.Inflate(ClientRectangle, -1, -1));
-                }
+                using Pen pen = new(ForeColor);
+                e.Graphics.DrawRectangle(pen, Rectangle.Inflate(ClientRectangle, -1, -1));
             }
 
-            using (ImageAttributes imageAttributes = new ImageAttributes())
+            using (ImageAttributes imageAttributes = new())
             {
                 ColorMap[] colorMap = new ColorMap[2];
-                colorMap[0] = new ColorMap();
-                colorMap[0].OldColor = Color.FromArgb(0, 0, 0);
-                colorMap[0].NewColor = ForeColor;
-                colorMap[1] = new ColorMap();
-                colorMap[1].OldColor = Image.GetPixel(0, 0);
-                colorMap[1].NewColor = Color.Transparent;
+                colorMap[0] = new ColorMap
+                {
+                    OldColor = Color.FromArgb(0, 0, 0),
+                    NewColor = ForeColor
+                };
+                colorMap[1] = new ColorMap
+                {
+                    OldColor = Image.GetPixel(0, 0),
+                    NewColor = Color.Transparent
+                };
 
                 imageAttributes.SetRemapTable(colorMap);
 

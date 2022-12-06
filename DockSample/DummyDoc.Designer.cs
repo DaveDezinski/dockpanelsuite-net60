@@ -69,14 +69,14 @@ namespace DockSample
             this.menuItem2.Name = "menuItem2";
             this.menuItem2.Size = new System.Drawing.Size(127, 22);
             this.menuItem2.Text = "Test";
-            this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+            this.menuItem2.Click += new System.EventHandler(this.MenuItem2_Click);
             // 
             // menuItemCheckTest
             // 
             this.menuItemCheckTest.Name = "menuItemCheckTest";
             this.menuItemCheckTest.Size = new System.Drawing.Size(127, 22);
             this.menuItemCheckTest.Text = "Check Test";
-            this.menuItemCheckTest.Click += new System.EventHandler(this.menuItemCheckTest_Click);
+            this.menuItemCheckTest.Click += new System.EventHandler(this.MenuItemCheckTest_Click);
             // 
             // contextMenuTabPage
             // 

@@ -28,7 +28,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         internal static DockPanelSkin CreateVisualStudio2003()
         {
-            DockPanelSkin skin = new DockPanelSkin();
+            DockPanelSkin skin = new();
 
             skin.AutoHideStripSkin.DockStripGradient.StartColor = SystemColors.ControlLight;
             skin.AutoHideStripSkin.DockStripGradient.EndColor = SystemColors.ControlLight;
@@ -64,7 +64,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             return skin;
         }
 
-        private class VS2003DockPaneStripFactory : DockPanelExtender.IDockPaneStripFactory
+        private sealed class VS2003DockPaneStripFactory : DockPanelExtender.IDockPaneStripFactory
         {
             public DockPaneStripBase CreateDockPaneStrip(DockPane pane)
             {
@@ -72,7 +72,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class VS2003AutoHideStripFactory : DockPanelExtender.IAutoHideStripFactory
+        private sealed class VS2003AutoHideStripFactory : DockPanelExtender.IAutoHideStripFactory
         {
             public AutoHideStripBase CreateAutoHideStrip(DockPanel panel)
             {
@@ -80,7 +80,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class VS2003DockPaneCaptionFactory : DockPanelExtender.IDockPaneCaptionFactory
+        private sealed class VS2003DockPaneCaptionFactory : DockPanelExtender.IDockPaneCaptionFactory
         {
             public DockPaneCaptionBase CreateDockPaneCaption(DockPane pane)
             {

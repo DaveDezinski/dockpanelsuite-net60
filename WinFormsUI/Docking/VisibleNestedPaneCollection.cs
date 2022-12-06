@@ -6,17 +6,17 @@ namespace WeifenLuo.WinFormsUI.Docking
 {
     public sealed class VisibleNestedPaneCollection : ReadOnlyCollection<DockPane>
     {
-        private NestedPaneCollection m_nestedPanes;
+        private readonly NestedPaneCollection _nestedPanes;
 
         internal VisibleNestedPaneCollection(NestedPaneCollection nestedPanes)
             : base(new List<DockPane>())
         {
-            m_nestedPanes = nestedPanes;
+            _nestedPanes = nestedPanes;
         }
 
         public NestedPaneCollection NestedPanes
         {
-            get	{	return m_nestedPanes;	}
+            get	{	return _nestedPanes;	}
         }
 
         public INestedPanesContainer Container
@@ -134,8 +134,6 @@ namespace WeifenLuo.WinFormsUI.Docking
                 NestedDockingStatus statusPrev = prevPane.NestedDockingStatus;
 
                 Rectangle rect = statusPrev.PaneBounds;
-                bool bVerticalSplitter = (status.DisplayingAlignment == DockAlignment.Left || status.DisplayingAlignment == DockAlignment.Right);
-
                 Rectangle rectThis = rect;
                 Rectangle rectPrev = rect;
                 Rectangle rectSplitter = rect;

@@ -17,7 +17,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
         /// Dock window of Visual Studio 2005 theme.
         /// </summary>
         [ToolboxItem(false)]
-        private class VS2005DockWindow : DockWindow
+        private sealed class VS2005DockWindow : DockWindow
         {
             internal VS2005DockWindow(DockPanel dockPanel, DockState dockState) : base(dockPanel, dockState)
             {

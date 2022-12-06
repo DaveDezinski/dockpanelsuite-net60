@@ -9,29 +9,29 @@ namespace WeifenLuo.WinFormsUI.Docking
         [ToolboxItem(false)]
         public class SplitterControlBase : Control, ISplitterDragSource
         {
-            DockPane m_pane;
+            readonly DockPane _pane;
 
             public SplitterControlBase(DockPane pane)
             {
                 SetStyle(ControlStyles.Selectable, false);
-                m_pane = pane;
+                _pane = pane;
             }
 
             public DockPane DockPane
             {
-                get { return m_pane; }
+                get { return _pane; }
             }
 
-            private DockAlignment m_alignment;
+            private DockAlignment _alignment;
             public DockAlignment Alignment
             {
-                get { return m_alignment; }
+                get { return _alignment; }
                 set
                 {
-                    m_alignment = value;
-                    if (m_alignment == DockAlignment.Left || m_alignment == DockAlignment.Right)
+                    _alignment = value;
+                    if (_alignment == DockAlignment.Left || _alignment == DockAlignment.Right)
                         Cursor = Cursors.VSplit;
-                    else if (m_alignment == DockAlignment.Top || m_alignment == DockAlignment.Bottom)
+                    else if (_alignment == DockAlignment.Top || _alignment == DockAlignment.Bottom)
                         Cursor = Cursors.HSplit;
                     else
                         Cursor = Cursors.Default;
@@ -55,10 +55,12 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             void ISplitterDragSource.BeginDrag(Rectangle rectSplitter)
             {
+                // No Implementation
             }
 
             void ISplitterDragSource.EndDrag()
             {
+                // No Implementation
             }
 
             bool ISplitterDragSource.IsVertical
@@ -122,10 +124,10 @@ namespace WeifenLuo.WinFormsUI.Docking
             #endregion
         }
         
-        private SplitterControlBase m_splitter;
+        private SplitterControlBase _splitter;
         private SplitterControlBase Splitter
         {
-            get { return m_splitter; }
+            get { return _splitter; }
         }
 
         internal Rectangle SplitterBounds

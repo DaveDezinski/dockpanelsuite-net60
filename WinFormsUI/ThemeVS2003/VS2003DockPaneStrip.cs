@@ -11,55 +11,22 @@ namespace WeifenLuo.WinFormsUI.Docking
     [ToolboxItem(false)]
     internal class VS2003DockPaneStrip : DockPaneStripBase
     {
-        private class TabVS2003 : Tab
+        private sealed class TabVS2003 : Tab
         {
             internal TabVS2003(IDockContent content)
                 : base(content)
             {
             }
 
-            private int m_tabX;
-            protected internal int TabX
-            {
-                get { return m_tabX; }
-                set { m_tabX = value; }
-            }
-
-            private int m_tabWidth;
-            protected internal int TabWidth
-            {
-                get { return m_tabWidth; }
-                set { m_tabWidth = value; }
-            }
-
-            private int m_maxWidth;
-            protected internal int MaxWidth
-            {
-                get { return m_maxWidth; }
-                set { m_maxWidth = value; }
-            }
-
-            private bool m_flag;
-            protected internal bool Flag
-            {
-                get { return m_flag; }
-                set { m_flag = value; }
-            }
+            internal int TabX { get; set; }
+            internal int TabWidth { get; set; }
+            internal int MaxWidth { get; set; }
+            internal bool Flag { get; set; }
         }
 
         protected internal override DockPaneStripBase.Tab CreateTab(IDockContent content)
         {
             return new TabVS2003(content);
-        }
-
-        private class DocumentButton : Label
-        {
-            public DocumentButton(Image image)
-            {
-                Image = image;
-            }
-
-
         }
 
         #region consts
@@ -88,25 +55,25 @@ namespace WeifenLuo.WinFormsUI.Docking
         private const int _DocumentIconWidth = 16;
         #endregion
 
-        private InertButton m_buttonClose, m_buttonScrollLeft, m_buttonScrollRight;
-        private IContainer m_components;
-        private ToolTip m_toolTip;
+        private readonly InertButton _buttonClose, _buttonScrollLeft, _buttonScrollRight;
+        private readonly IContainer _components;
+        private readonly ToolTip _toolTip;
 
         /// <exclude/>
         protected IContainer Components
         {
-            get	{	return m_components;	}
+            get	{	return _components;	}
         }
 
-        private int m_offsetX = 0;
+        private int _offsetX = 0;
         private int OffsetX
         {
-            get	{	return m_offsetX;	}
+            get	{	return _offsetX;	}
             set
             {	
-                m_offsetX = value;
+                _offsetX = value;
                 #if DEBUG
-                if (m_offsetX > 0)
+                if (_offsetX > 0)
                     throw new InvalidOperationException();
                 #endif
             }
@@ -185,8 +152,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageCloseEnabled == null)
-                    _imageCloseEnabled = Resources.DockPaneStrip_CloseEnabled;
+                _imageCloseEnabled ??= Resources.DockPaneStrip_CloseEnabled;
                 return _imageCloseEnabled;
             }
         }
@@ -197,8 +163,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageCloseDisabled == null)
-                    _imageCloseDisabled = Resources.DockPaneStrip_CloseDisabled;
+                _imageCloseDisabled ??= Resources.DockPaneStrip_CloseDisabled;
                 return _imageCloseDisabled;
             }
         }
@@ -209,8 +174,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageScrollLeftEnabled == null)
-                    _imageScrollLeftEnabled = Resources.DockPaneStrip_ScrollLeftEnabled;
+                _imageScrollLeftEnabled ??= Resources.DockPaneStrip_ScrollLeftEnabled;
                 return _imageScrollLeftEnabled;
             }
         }
@@ -221,8 +185,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageScrollLeftDisabled == null)
-                    _imageScrollLeftDisabled = Resources.DockPaneStrip_ScrollLeftDisabled;
+                _imageScrollLeftDisabled ??= Resources.DockPaneStrip_ScrollLeftDisabled;
                 return _imageScrollLeftDisabled;
             }
         }
@@ -233,8 +196,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageScrollRightEnabled == null)
-                    _imageScrollRightEnabled = Resources.DockPaneStrip_ScrollRightEnabled;
+                _imageScrollRightEnabled ??= Resources.DockPaneStrip_ScrollRightEnabled;
                 return _imageScrollRightEnabled;
             }
         }
@@ -245,8 +207,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageScrollRightDisabled == null)
-                    _imageScrollRightDisabled = Resources.DockPaneStrip_ScrollRightDisabled;
+                _imageScrollRightDisabled ??= Resources.DockPaneStrip_ScrollRightDisabled;
                 return _imageScrollRightDisabled;
             }
         }
@@ -257,8 +218,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_toolTipClose == null)
-                    _toolTipClose = WeifenLuo.WinFormsUI.ThemeVS2003.Strings.DockPaneStrip_ToolTipClose;
+                _toolTipClose ??= ThemeVS2003.Strings.DockPaneStrip_ToolTipClose;
                 return _toolTipClose;
             }
         }
@@ -269,8 +229,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_toolTipScrollLeft == null)
-                    _toolTipScrollLeft = WeifenLuo.WinFormsUI.ThemeVS2003.Strings.DockPaneStrip_ToolTipScrollLeft;
+                _toolTipScrollLeft ??= ThemeVS2003.Strings.DockPaneStrip_ToolTipScrollLeft;
                 return _toolTipScrollLeft;
             }
         }
@@ -281,13 +240,12 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_toolTipScrollRight == null)
-                    _toolTipScrollRight = WeifenLuo.WinFormsUI.ThemeVS2003.Strings.DockPaneStrip_ToolTipScrollRight;
+                _toolTipScrollRight ??= ThemeVS2003.Strings.DockPaneStrip_ToolTipScrollRight;
                 return _toolTipScrollRight;
             }
         }
 
-        private static TextFormatFlags _toolWindowTextFormat =
+        private static readonly TextFormatFlags _toolWindowTextFormat =
             TextFormatFlags.EndEllipsis |
             TextFormatFlags.HorizontalCenter |
             TextFormatFlags.SingleLine |
@@ -298,7 +256,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             get	{	return _toolWindowTextFormat;	}
         }
 
-        private static TextFormatFlags _documentTextFormat =
+        private static readonly TextFormatFlags _documentTextFormat =
             TextFormatFlags.PathEllipsis |
             TextFormatFlags.SingleLine |
             TextFormatFlags.VerticalCenter;
@@ -422,32 +380,32 @@ namespace WeifenLuo.WinFormsUI.Docking
             Font = SystemInformation.MenuFont;
             BackColor = Color.WhiteSmoke;
             
-            m_components = new Container();
-            m_toolTip = new ToolTip(Components);
+            _components = new Container();
+            _toolTip = new ToolTip(Components);
 
-            m_buttonClose = new InertButton(ImageCloseEnabled, ImageCloseDisabled);
-            m_buttonScrollLeft = new InertButton(ImageScrollLeftEnabled, ImageScrollLeftDisabled);
-            m_buttonScrollRight = new InertButton(ImageScrollRightEnabled, ImageScrollRightDisabled);
+            _buttonClose = new InertButton(ImageCloseEnabled, ImageCloseDisabled);
+            _buttonScrollLeft = new InertButton(ImageScrollLeftEnabled, ImageScrollLeftDisabled);
+            _buttonScrollRight = new InertButton(ImageScrollRightEnabled, ImageScrollRightDisabled);
 
-            m_buttonClose.ToolTipText = ToolTipClose;
-            m_buttonClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            m_buttonClose.Click += new EventHandler(Close_Click);
+            _buttonClose.ToolTipText = ToolTipClose;
+            _buttonClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _buttonClose.Click += new EventHandler(Close_Click);
 
-            m_buttonScrollLeft.Enabled = false;
-            m_buttonScrollLeft.RepeatClick = true;
-            m_buttonScrollLeft.ToolTipText = ToolTipScrollLeft;
-            m_buttonScrollLeft.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            m_buttonScrollLeft.Click += new EventHandler(ScrollLeft_Click);
+            _buttonScrollLeft.Enabled = false;
+            _buttonScrollLeft.RepeatClick = true;
+            _buttonScrollLeft.ToolTipText = ToolTipScrollLeft;
+            _buttonScrollLeft.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _buttonScrollLeft.Click += new EventHandler(ScrollLeft_Click);
 
-            m_buttonScrollRight.Enabled = false;
-            m_buttonScrollRight.RepeatClick = true;
-            m_buttonScrollRight.ToolTipText = ToolTipScrollRight;
-            m_buttonScrollRight.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            m_buttonScrollRight.Click += new EventHandler(ScrollRight_Click);
+            _buttonScrollRight.Enabled = false;
+            _buttonScrollRight.RepeatClick = true;
+            _buttonScrollRight.ToolTipText = ToolTipScrollRight;
+            _buttonScrollRight.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _buttonScrollRight.Click += new EventHandler(ScrollRight_Click);
 
-            Controls.AddRange(new Control[] {	m_buttonClose,
-                                                m_buttonScrollLeft,
-                                                m_buttonScrollRight	});
+            Controls.AddRange(new Control[] {	_buttonClose,
+                                                _buttonScrollLeft,
+                                                _buttonScrollRight	});
 
             ResumeLayout();
         }
@@ -537,7 +495,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 pts[7] = DockPane.PointToScreen(new Point(rectPaneClient.Left, y));
             }
 
-            GraphicsPath path = new GraphicsPath();
+            GraphicsPath path = new();
             path.AddLines(pts);
             return path;
         }
@@ -559,23 +517,23 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             // Calculate tab widths
             int countTabs = Tabs.Count;
-            foreach (TabVS2003 tab in Tabs)
+            foreach (Tab tab in Tabs)
             {
-                tab.MaxWidth = GetTabOriginalWidth(Tabs.IndexOf(tab));
-                tab.Flag = false;
+                ((TabVS2003)tab).MaxWidth = GetTabOriginalWidth(Tabs.IndexOf(tab));
+                ((TabVS2003)tab).Flag = false;
             }
 
             // Set tab whose max width less than average width
-            bool anyWidthWithinAverage = true;
             int totalWidth = rectTabStrip.Width - ToolWindowStripGapLeft - ToolWindowStripGapRight;
             int totalAllocatedWidth = 0;
             int averageWidth = totalWidth / countTabs;
             int remainedTabs = countTabs;
-            for (anyWidthWithinAverage=true; anyWidthWithinAverage && remainedTabs>0;)
+            for (bool anyWidthWithinAverage=true; anyWidthWithinAverage && remainedTabs>0;)
             {
                 anyWidthWithinAverage = false;
-                foreach (TabVS2003 tab in Tabs)
+                foreach (Tab tabObject in Tabs)
                 {
+                    var tab = tabObject as TabVS2003;
                     if (tab.Flag)
                         continue;
 
@@ -596,8 +554,9 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (remainedTabs > 0)
             {
                 int roundUpWidth = (totalWidth - totalAllocatedWidth) - (averageWidth * remainedTabs);
-                foreach (TabVS2003 tab in Tabs)
+                foreach (Tab tabObject in Tabs)
                 {
+                    var tab = tabObject as TabVS2003;
                     if (tab.Flag)
                         continue;
 
@@ -614,8 +573,9 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             // Set the X position of the tabs
             int x = rectTabStrip.X + ToolWindowStripGapLeft;
-            foreach (TabVS2003 tab in Tabs)
+            foreach (Tab tabObject in Tabs)
             {
+                var tab = tabObject as TabVS2003;
                 tab.TabX = x;
                 x += tab.TabWidth;
             }
@@ -626,8 +586,9 @@ namespace WeifenLuo.WinFormsUI.Docking
             Rectangle rectTabStrip = TabsRectangle;
 
             int totalWidth = 0;
-            foreach (TabVS2003 tab in Tabs)
+            foreach (Tab tabObject in Tabs)
             {
+                var tab = tabObject as TabVS2003;
                 tab.TabWidth = Math.Min(GetTabOriginalWidth(Tabs.IndexOf(tab)), DocumentTabMaxWidth);
                 totalWidth += tab.TabWidth;
             }
@@ -636,8 +597,9 @@ namespace WeifenLuo.WinFormsUI.Docking
                 OffsetX = Math.Min(0, rectTabStrip.Width - totalWidth);
 
             int x = rectTabStrip.X + OffsetX;
-            foreach (TabVS2003 tab in Tabs)
+            foreach (Tab tabObject in Tabs)
             {
+                var tab = tabObject as TabVS2003;
                 tab.TabX = x;
                 x += tab.TabWidth;
             }
@@ -674,12 +636,10 @@ namespace WeifenLuo.WinFormsUI.Docking
         private int GetTabOriginalWidth_ToolWindow(int index)
         {
             IDockContent content = Tabs[index].Content;
-            using (Graphics g = CreateGraphics())
-            {
-                Size sizeString = TextRenderer.MeasureText(g, content.DockHandler.TabText, Font);
-                return ToolWindowImageWidth + sizeString.Width + ToolWindowImageGapLeft
-                    + ToolWindowImageGapRight + ToolWindowTextGapRight;
-            }
+            using Graphics g = CreateGraphics();
+            Size sizeString = TextRenderer.MeasureText(g, content.DockHandler.TabText, Font);
+            return ToolWindowImageWidth + sizeString.Width + ToolWindowImageGapLeft
+                + ToolWindowImageGapRight + ToolWindowTextGapRight;
         }
 
         private int GetTabOriginalWidth_Document(int index)
@@ -688,24 +648,20 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             int height = GetTabRectangle_Document(index).Height;
 
-            using (Graphics g = CreateGraphics())
+            using Graphics g = CreateGraphics();
+            Size sizeText;
+            if (content == DockPane.ActiveContent && DockPane.IsActiveDocumentPane)
             {
-                Size sizeText;
-                if (content == DockPane.ActiveContent && DockPane.IsActiveDocumentPane)
-                {
-                    using (Font boldFont = new Font(this.Font, FontStyle.Bold))
-                    {
-                        sizeText = TextRenderer.MeasureText(g, content.DockHandler.TabText, boldFont, new Size(DocumentTabMaxWidth, height), DocumentTextFormat);
-                    }
-                }
-                else
-                    sizeText = TextRenderer.MeasureText(content.DockHandler.TabText, Font, new Size(DocumentTabMaxWidth, height), DocumentTextFormat);
-
-                if (DockPane.DockPanel.ShowDocumentIcon)
-                    return sizeText.Width + DocumentIconWidth + DocumentIconGapLeft;
-                else
-                    return sizeText.Width;
+                using Font boldFont = new(this.Font, FontStyle.Bold);
+                sizeText = TextRenderer.MeasureText(g, content.DockHandler.TabText, boldFont, new Size(DocumentTabMaxWidth, height), DocumentTextFormat);
             }
+            else
+                sizeText = TextRenderer.MeasureText(content.DockHandler.TabText, Font, new Size(DocumentTabMaxWidth, height), DocumentTextFormat);
+
+            if (DockPane.DockPanel.ShowDocumentIcon)
+                return sizeText.Width + DocumentIconWidth + DocumentIconGapLeft;
+            else
+                return sizeText.Width;
         }
 
         private void DrawTabStrip(Graphics g)
@@ -732,7 +688,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             // Draw the tabs
             Rectangle rectTabOnly = TabsRectangle;
-            Rectangle rectTab = Rectangle.Empty;
+            Rectangle rectTab;
             g.SetClip(rectTabOnly);
             for (int i=0; i<count; i++)
             {
@@ -801,7 +757,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         private void DrawTab_ToolWindow(Graphics g, TabVS2003 tab)
         {
             var rect = tab.Rectangle.Value;
-            Rectangle rectIcon = new Rectangle(
+            Rectangle rectIcon = new(
                 rect.X + ToolWindowImageGapLeft,
                 rect.Y + rect.Height - 1 - ToolWindowImageGapBottom - ToolWindowImageHeight,
                 ToolWindowImageWidth, ToolWindowImageHeight);
@@ -857,8 +813,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 if (DockPane.DockPanel.ShowDocumentIcon)
                 {
-                    Icon icon = (tab.Content as Form).Icon;
-                    Rectangle rectIcon = new Rectangle(
+                    Rectangle rectIcon = new(
                         rect.X + DocumentIconGapLeft,
                         rect.Y + (rect.Height - DocumentIconHeight) / 2,
                         DocumentIconWidth, DocumentIconHeight);
@@ -868,10 +823,8 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 if (DockPane.IsActiveDocumentPane)
                 {
-                    using (Font boldFont = new Font(this.Font, FontStyle.Bold))
-                    {
-                        TextRenderer.DrawText(g, tab.Content.DockHandler.TabText, boldFont, rectText, ActiveTextColor, DocumentTextFormat);
-                    }
+                    using Font boldFont = new(this.Font, FontStyle.Bold);
+                    TextRenderer.DrawText(g, tab.Content.DockHandler.TabText, boldFont, rectText, ActiveTextColor, DocumentTextFormat);
                 }
                 else
                     TextRenderer.DrawText(g, tab.Content.DockHandler.TabText, Font, rectText, InactiveTextColor, DocumentTextFormat);
@@ -885,8 +838,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 if (DockPane.DockPanel.ShowDocumentIcon)
                 {
-                    Icon icon = tab.ContentForm.Icon;
-                    Rectangle rectIcon = new Rectangle(
+                    Rectangle rectIcon = new(
                         rect.X + DocumentIconGapLeft,
                         rect.Y + (rect.Height - DocumentIconHeight) / 2,
                         DocumentIconWidth, DocumentIconHeight);
@@ -915,9 +867,9 @@ namespace WeifenLuo.WinFormsUI.Docking
                 width -= DocumentTabGapLeft + 
                         DocumentTabGapRight +
                         DocumentButtonGapRight +
-                        m_buttonClose.Width +
-                        m_buttonScrollRight.Width +
-                        m_buttonScrollLeft.Width +
+                        _buttonClose.Width +
+                        _buttonScrollRight.Width +
+                        _buttonScrollLeft.Width +
                         2 * DocumentButtonGapBetween;
 
                 return new Rectangle(x, y, width, height);
@@ -970,28 +922,28 @@ namespace WeifenLuo.WinFormsUI.Docking
         private void SetInertButtons()
         {
             // Set the visibility of the inert buttons
-            m_buttonScrollLeft.Visible = m_buttonScrollRight.Visible = m_buttonClose.Visible = (DockPane.DockState == DockState.Document);
+            _buttonScrollLeft.Visible = _buttonScrollRight.Visible = _buttonClose.Visible = (DockPane.DockState == DockState.Document);
 
-            m_buttonClose.ForeColor = m_buttonScrollRight.ForeColor	= m_buttonScrollLeft.ForeColor = SystemColors.ControlDarkDark;
-            m_buttonClose.BorderColor = m_buttonScrollRight.BorderColor	= m_buttonScrollLeft.BorderColor = SystemColors.ControlDarkDark;
+            _buttonClose.ForeColor = _buttonScrollRight.ForeColor	= _buttonScrollLeft.ForeColor = SystemColors.ControlDarkDark;
+            _buttonClose.BorderColor = _buttonScrollRight.BorderColor	= _buttonScrollLeft.BorderColor = SystemColors.ControlDarkDark;
         
             // Enable/disable scroll buttons
             int count = Tabs.Count;
 
             Rectangle rectTabOnly = TabsRectangle;
             Rectangle rectTab = (count == 0) ? Rectangle.Empty : GetTabRectangle(count - 1);
-            m_buttonScrollLeft.Enabled = (OffsetX < 0);
-            m_buttonScrollRight.Enabled = rectTab.Right > rectTabOnly.Right;
+            _buttonScrollLeft.Enabled = (OffsetX < 0);
+            _buttonScrollRight.Enabled = rectTab.Right > rectTabOnly.Right;
 
             // show/hide close button
             if (Appearance == DockPane.AppearanceStyle.ToolWindow)
-                m_buttonClose.Visible = false;
+                _buttonClose.Visible = false;
             else
             {
-                bool showCloseButton = DockPane.ActiveContent == null ? true : DockPane.ActiveContent.DockHandler.CloseButton;
-                if (m_buttonClose.Visible != showCloseButton)
+                bool showCloseButton = DockPane.ActiveContent == null || DockPane.ActiveContent.DockHandler.CloseButton;
+                if (_buttonClose.Visible != showCloseButton)
                 {
-                    m_buttonClose.Visible = showCloseButton;
+                    _buttonClose.Visible = showCloseButton;
                     PerformLayout();
                 }
             }
@@ -1011,19 +963,19 @@ namespace WeifenLuo.WinFormsUI.Docking
                 buttonWidth = buttonWidth * height / buttonHeight;
                 buttonHeight = height;
             }
-            Size buttonSize = new Size(buttonWidth, buttonHeight);
-            m_buttonClose.Size = m_buttonScrollLeft.Size = m_buttonScrollRight.Size = buttonSize;
+            Size buttonSize = new(buttonWidth, buttonHeight);
+            _buttonClose.Size = _buttonScrollLeft.Size = _buttonScrollRight.Size = buttonSize;
             int x = rectTabStrip.X + rectTabStrip.Width - DocumentTabGapLeft
                 - DocumentButtonGapRight - buttonWidth;
             int y = rectTabStrip.Y + DocumentButtonGapTop;
-            m_buttonClose.Location = new Point(x, y);
-            Point point = m_buttonClose.Location;
-            bool showCloseButton = DockPane.ActiveContent == null ? true : DockPane.ActiveContent.DockHandler.CloseButton;
+            _buttonClose.Location = new Point(x, y);
+            Point point = _buttonClose.Location;
+            bool showCloseButton = DockPane.ActiveContent == null || DockPane.ActiveContent.DockHandler.CloseButton;
             if (showCloseButton)
                 point.Offset(-(DocumentButtonGapBetween + buttonWidth), 0);
-            m_buttonScrollRight.Location = point;
+            _buttonScrollRight.Location = point;
             point.Offset(-(DocumentButtonGapBetween + buttonWidth), 0);
-            m_buttonScrollLeft.Location = point;
+            _buttonScrollLeft.Location = point;
 
             OnRefreshChanges();
 
@@ -1076,11 +1028,11 @@ namespace WeifenLuo.WinFormsUI.Docking
                     toolTip = Tabs[index].Content.DockHandler.TabText;
             }
 
-            if (m_toolTip.GetToolTip(this) != toolTip)
+            if (_toolTip.GetToolTip(this) != toolTip)
             {
-                m_toolTip.Active = false;
-                m_toolTip.SetToolTip(this, toolTip);
-                m_toolTip.Active = true;
+                _toolTip.Active = false;
+                _toolTip.SetToolTip(this, toolTip);
+                _toolTip.Active = true;
             }
         }
 

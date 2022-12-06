@@ -21,7 +21,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             Extender.PanelIndicatorFactory = new DefaultPanelIndicatorFactory();
         }
 
-        private class DefaultAutoHideStripFactory : DockPanelExtender.IAutoHideStripFactory
+        private sealed class DefaultAutoHideStripFactory : DockPanelExtender.IAutoHideStripFactory
         {
             public AutoHideStripBase CreateAutoHideStrip(DockPanel panel)
             {
@@ -53,7 +53,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         }
 
-        private class DefaultAutoHideWindowFactory : DockPanelExtender.IAutoHideWindowFactory
+        private sealed class DefaultAutoHideWindowFactory : DockPanelExtender.IAutoHideWindowFactory
         {
             public DockPanel.AutoHideWindowControl CreateAutoHideWindow(DockPanel panel)
             {
@@ -68,7 +68,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class DefaultWindowSplitterControlFactory : DockPanelExtender.IWindowSplitterControlFactory
+        private sealed class DefaultWindowSplitterControlFactory : DockPanelExtender.IWindowSplitterControlFactory
         {
             public SplitterBase CreateSplitterControl(ISplitterHost host)
             {
@@ -76,7 +76,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class DefaultDockWindowFactory : DockPanelExtender.IDockWindowFactory
+        private sealed class DefaultDockWindowFactory : DockPanelExtender.IDockWindowFactory
         {
             public DockWindow CreateDockWindow(DockPanel dockPanel, DockState dockState)
             {
@@ -84,7 +84,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class DefaultDockPaneSplitterControlFactory : DockPanelExtender.IDockPaneSplitterControlFactory
+        private sealed class DefaultDockPaneSplitterControlFactory : DockPanelExtender.IDockPaneSplitterControlFactory
         {
             public DockPane.SplitterControlBase CreateSplitterControl(DockPane pane)
             {
@@ -92,7 +92,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class DefaultDockPaneCaptionFactory : DockPanelExtender.IDockPaneCaptionFactory
+        private sealed class DefaultDockPaneCaptionFactory : DockPanelExtender.IDockPaneCaptionFactory
         {
             public DockPaneCaptionBase CreateDockPaneCaption(DockPane pane)
             {
@@ -112,7 +112,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class DefaultDockPaneStripFactory : DockPanelExtender.IDockPaneStripFactory
+        private sealed class DefaultDockPaneStripFactory : DockPanelExtender.IDockPaneStripFactory
         {
             public DockPaneStripBase CreateDockPaneStrip(DockPane pane)
             {
@@ -178,20 +178,18 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private class DefaultPaneIndicatorFactory : DockPanelExtender.IPaneIndicatorFactory
+        private sealed class DefaultPaneIndicatorFactory : DockPanelExtender.IPaneIndicatorFactory
         {
             public DockPanel.IPaneIndicator CreatePaneIndicator(ThemeBase theme)
             {
-                return new DefaultPaneIndicator(theme);
+                return new DefaultPaneIndicator();
             }
 
-            private class DefaultPaneIndicator : DockPanel.IPaneIndicator
+            private sealed class DefaultPaneIndicator : DockPanel.IPaneIndicator
             {
-                private ThemeBase theme;
 
-                public DefaultPaneIndicator(ThemeBase theme)
+                public DefaultPaneIndicator()
                 {
-                    this.theme = theme;
                 }
 
                 public Point Location { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
@@ -215,29 +213,22 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 public DockStyle Status { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
-                public DockStyle HitTest(Point pt)
-                {
-                    throw new System.NotImplementedException();
-                }
+                public DockStyle HitTest(Point pt) => throw new System.NotImplementedException();
             }
         }
 
-        private class DefaultPanelIndicatorFactory : DockPanelExtender.IPanelIndicatorFactory
+        private sealed class DefaultPanelIndicatorFactory : DockPanelExtender.IPanelIndicatorFactory
         {
             public DockPanel.IPanelIndicator CreatePanelIndicator(DockStyle style, ThemeBase theme)
             {
-                return new DefaultPanelIndicator(style, theme);
+                return new DefaultPanelIndicator();
             }
 
-            private class DefaultPanelIndicator : DockPanel.IPanelIndicator
+            private sealed class DefaultPanelIndicator : DockPanel.IPanelIndicator
             {
-                private DockStyle style;
-                private ThemeBase theme;
 
-                public DefaultPanelIndicator(DockStyle style, ThemeBase theme)
+                public DefaultPanelIndicator()
                 {
-                    this.style = style;
-                    this.theme = theme;
                 }
 
                 public Point Location { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
@@ -251,10 +242,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 public DockStyle Status { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
-                public DockStyle HitTest(Point pt)
-                {
-                    throw new System.NotImplementedException();
-                }
+                public DockStyle HitTest(Point pt) => throw new System.NotImplementedException();
             }
         }
     }

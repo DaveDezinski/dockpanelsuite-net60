@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
 using WeifenLuo.WinFormsUI.Docking.Win32;
 
 namespace WeifenLuo.WinFormsUI.Docking
@@ -38,10 +37,6 @@ namespace WeifenLuo.WinFormsUI.Docking
         public static extern int ShowScrollBar(IntPtr hWnd, int wBar, int bShow);
 
         [DllImport("user32.dll", CharSet=CharSet.Auto)]
-        //*********************************
-        // FxCop bug, suppress the message
-        //*********************************
-        [SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "0")]
         public static extern IntPtr WindowFromPoint(Point point);
 
         [DllImport("Kernel32.dll", CharSet = CharSet.Auto)]

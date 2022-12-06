@@ -44,15 +44,13 @@ namespace WeifenLuo.WinFormsUI.Docking
         private void MakeForegroundBrush(Rectangle rect)
         {
             _foregroundBrush?.Dispose();
-            using (var path = new GraphicsPath())
+            using var path = new GraphicsPath();
+            path.AddRectangle(rect);
+            _foregroundBrush = new PathGradientBrush(path)
             {
-                path.AddRectangle(rect);
-                _foregroundBrush = new PathGradientBrush(path)
-                {
-                    CenterColor = _horizontalBrush.Color,
-                    SurroundColors = _verticalSurroundColors
-                };
-            }
+                CenterColor = _horizontalBrush.Color,
+                SurroundColors = _verticalSurroundColors
+            };
         }
 
         protected override void Dispose(bool disposing)

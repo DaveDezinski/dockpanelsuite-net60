@@ -2,6 +2,7 @@ using System;
 
 namespace WeifenLuo.WinFormsUI.Docking.Win32
 {
+#pragma warning disable CA1069
     [Flags]
     internal enum FlagsSetWindowPos : uint
     {
@@ -11,13 +12,13 @@ namespace WeifenLuo.WinFormsUI.Docking.Win32
         SWP_NOREDRAW        = 0x0008,
         SWP_NOACTIVATE      = 0x0010,
         SWP_FRAMECHANGED    = 0x0020,
+        SWP_DRAWFRAME       = 0x0020,
         SWP_SHOWWINDOW      = 0x0040,
         SWP_HIDEWINDOW      = 0x0080,
         SWP_NOCOPYBITS      = 0x0100,
-        SWP_NOOWNERZORDER   = 0x0200, 
-        SWP_NOSENDCHANGING  = 0x0400,
-        SWP_DRAWFRAME       = 0x0020,
+        SWP_NOOWNERZORDER   = 0x0200,
         SWP_NOREPOSITION    = 0x0200,
+        SWP_NOSENDCHANGING  = 0x0400,
         SWP_DEFERERASE      = 0x2000,
         SWP_ASYNCWINDOWPOS  = 0x4000
     }
@@ -44,37 +45,40 @@ namespace WeifenLuo.WinFormsUI.Docking.Win32
     internal enum WindowStyles : uint
     {
         WS_OVERLAPPED       = 0x00000000,
-        WS_POPUP            = 0x80000000,
-        WS_CHILD            = 0x40000000,
-        WS_MINIMIZE         = 0x20000000,
-        WS_VISIBLE          = 0x10000000,
-        WS_DISABLED         = 0x08000000,
-        WS_CLIPSIBLINGS     = 0x04000000,
-        WS_CLIPCHILDREN     = 0x02000000,
-        WS_MAXIMIZE         = 0x01000000,
-        WS_CAPTION          = 0x00C00000,
-        WS_BORDER           = 0x00800000,
-        WS_DLGFRAME         = 0x00400000,
-        WS_VSCROLL          = 0x00200000,
-        WS_HSCROLL          = 0x00100000,
-        WS_SYSMENU          = 0x00080000,
-        WS_THICKFRAME       = 0x00040000,
-        WS_GROUP            = 0x00020000,
-        WS_TABSTOP          = 0x00010000,
-        WS_MINIMIZEBOX      = 0x00020000,
-        WS_MAXIMIZEBOX      = 0x00010000,
         WS_TILED            = 0x00000000,
-        WS_ICONIC           = 0x20000000,
+        WS_MAXIMIZEBOX      = 0x00010000,
+        WS_TABSTOP          = 0x00010000,
+        WS_GROUP            = 0x00020000,
+        WS_MINIMIZEBOX      = 0x00020000,
+        WS_THICKFRAME       = 0x00040000,
         WS_SIZEBOX          = 0x00040000,
-        WS_POPUPWINDOW      = 0x80880000,
+        WS_SYSMENU          = 0x00080000,
+        WS_HSCROLL          = 0x00100000,
+        WS_VSCROLL          = 0x00200000,
+        WS_DLGFRAME         = 0x00400000,
+        WS_BORDER           = 0x00800000,
+        WS_CAPTION          = 0x00C00000,
         WS_OVERLAPPEDWINDOW = 0x00CF0000,
         WS_TILEDWINDOW      = 0x00CF0000,
-        WS_CHILDWINDOW      = 0x40000000
+        WS_MAXIMIZE         = 0x01000000,
+        WS_CLIPCHILDREN     = 0x02000000,
+        WS_CLIPSIBLINGS     = 0x04000000,
+        WS_DISABLED         = 0x08000000,
+        WS_VISIBLE          = 0x10000000,
+        WS_ICONIC           = 0x20000000,
+        WS_MINIMIZE         = 0x20000000,
+        WS_CHILD            = 0x40000000,
+        WS_CHILDWINDOW      = 0x40000000,
+        WS_POPUP            = 0x80000000,
+        WS_POPUPWINDOW      = 0x80880000
     }
 
     [Flags]
     internal enum WindowExStyles
     {
+        WS_EX_LEFT              = 0x00000000,
+        WS_EX_LTRREADING        = 0x00000000,
+        WS_EX_RIGHTSCROLLBAR    = 0x00000000,
         WS_EX_DLGMODALFRAME     = 0x00000001,
         WS_EX_NOPARENTNOTIFY    = 0x00000004,
         WS_EX_TOPMOST           = 0x00000008,
@@ -83,19 +87,16 @@ namespace WeifenLuo.WinFormsUI.Docking.Win32
         WS_EX_MDICHILD          = 0x00000040,
         WS_EX_TOOLWINDOW        = 0x00000080,
         WS_EX_WINDOWEDGE        = 0x00000100,
+        WS_EX_PALETTEWINDOW     = 0x00000188,
         WS_EX_CLIENTEDGE        = 0x00000200,
+        WS_EX_OVERLAPPEDWINDOW  = 0x00000300,
         WS_EX_CONTEXTHELP       = 0x00000400,
         WS_EX_RIGHT             = 0x00001000,
-        WS_EX_LEFT              = 0x00000000,
         WS_EX_RTLREADING        = 0x00002000,
-        WS_EX_LTRREADING        = 0x00000000,
         WS_EX_LEFTSCROLLBAR     = 0x00004000,
-        WS_EX_RIGHTSCROLLBAR    = 0x00000000,
         WS_EX_CONTROLPARENT     = 0x00010000,
         WS_EX_STATICEDGE        = 0x00020000,
         WS_EX_APPWINDOW         = 0x00040000,
-        WS_EX_OVERLAPPEDWINDOW  = 0x00000300,
-        WS_EX_PALETTEWINDOW     = 0x00000188,
         WS_EX_LAYERED			= 0x00080000,
         WS_EX_NOACTIVATE        = 0x08000000
     }
@@ -153,7 +154,7 @@ namespace WeifenLuo.WinFormsUI.Docking.Win32
         WM_COMPAREITEM            = 0x0039,
         WM_GETOBJECT              = 0x003D,
         WM_COMPACTING             = 0x0041,
-        WM_COMMNOTIFY             = 0x0044 ,
+        WM_COMMNOTIFY             = 0x0044,
         WM_WINDOWPOSCHANGING      = 0x0046,
         WM_WINDOWPOSCHANGED       = 0x0047,
         WM_POWER                  = 0x0048,
@@ -316,9 +317,12 @@ namespace WeifenLuo.WinFormsUI.Docking.Win32
         HTHSCROLL		= 6,
         HTVSCROLL		= 7,
         HTMINBUTTON		= 8,
-        HTMAXBUTTON		= 9,
+        HTREDUCE        = 8,
+        HTZOOM          = 9,
+        HTMAXBUTTON     = 9,
         HTLEFT			= 10,
-        HTRIGHT			= 11,
+        HTSIZEFIRST     = 10,
+        HTRIGHT         = 11,
         HTTOP			= 12,
         HTTOPLEFT		= 13,
         HTTOPRIGHT		= 14,
@@ -326,26 +330,24 @@ namespace WeifenLuo.WinFormsUI.Docking.Win32
         HTBOTTOMLEFT	= 16,
         HTBOTTOMRIGHT	= 17,
         HTBORDER		= 18,
-        HTREDUCE		= 8,
-        HTZOOM			= 9 ,
-        HTSIZEFIRST		= 10,
         HTSIZELAST		= 17,
         HTOBJECT		= 19,
         HTCLOSE			= 20,
         HTHELP			= 21
     }
+#pragma warning restore CA1069
 
     internal enum ScrollBars : uint
     {
         SB_HORZ = 0,
         SB_VERT = 1,
-        SB_CTL = 2,
+        SB_CTL  = 2,
         SB_BOTH = 3
     }
 
     internal enum GetWindowLongIndex
     {
-        GWL_STYLE = -16,
+        GWL_STYLE  = -16,
         GWL_EXSTYLE = -20
     }
 

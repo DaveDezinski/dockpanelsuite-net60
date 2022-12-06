@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -14,7 +13,6 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
         {
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
         public VS2013DockPane(IDockContent content, FloatWindow floatWindow, bool show)
             : base(content, floatWindow, show)
         {
@@ -25,7 +23,6 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
         {
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
         public VS2013DockPane(IDockContent content, Rectangle floatWindowBounds, bool show)
             : base(content, floatWindowBounds, show)
         {

@@ -10,13 +10,13 @@ namespace WeifenLuo.WinFormsUI.Docking
     {
         //  This class comes from Jacob Slusser's MdiClientController class:
         //  http://www.codeproject.com/cs/miscctrl/mdiclientcontroller.asp
-        private class MdiClientController : NativeWindow, IComponent, IDisposable
+        private class MdiClientController : NativeWindow, IComponent
         {
-            private bool m_autoScroll = true;
-            private BorderStyle m_borderStyle = BorderStyle.Fixed3D;
-            private MdiClient m_mdiClient = null;
-            private Form m_parentForm = null;
-            private ISite m_site = null;
+            private bool _autoScroll = true;
+            private BorderStyle _borderStyle = BorderStyle.Fixed3D;
+            private MdiClient _mdiClient = null;
+            private Form _parentForm = null;
+            private ISite _site = null;
 
             public void Dispose()
             {
@@ -37,14 +37,14 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             public bool AutoScroll
             {
-                get { return m_autoScroll; }
+                get { return _autoScroll; }
                 set
                 {
                     // By default the MdiClient control scrolls. It can appear though that
                     // there are no scrollbars by turning them off when the non-client
                     // area is calculated. I decided to expose this method following
                     // the .NET vernacular of an AutoScroll property.
-                    m_autoScroll = value;
+                    _autoScroll = value;
                     if (MdiClient != null)
                         UpdateStyles();
                 }
@@ -58,7 +58,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                     if (!Enum.IsDefined(typeof(BorderStyle), value))
                         throw new InvalidEnumArgumentException();
 
-                    m_borderStyle = value;
+                    _borderStyle = value;
 
                     if (MdiClient == null)
                         return;
@@ -85,7 +85,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                         int exStyle = NativeMethods.GetWindowLong(MdiClient.Handle, (int)Win32.GetWindowLongIndex.GWL_EXSTYLE);
 
                         // Add or remove style flags as necessary.
-                        switch (m_borderStyle)
+                        switch (_borderStyle)
                         {
                             case BorderStyle.Fixed3D:
                                 exStyle |= (int)Win32.WindowExStyles.WS_EX_CLIENTEDGE;
@@ -104,8 +104,8 @@ namespace WeifenLuo.WinFormsUI.Docking
                         }
 
                         // Set the styles using Win32 calls
-                        NativeMethods.SetWindowLong(MdiClient.Handle, (int)Win32.GetWindowLongIndex.GWL_STYLE, style);
-                        NativeMethods.SetWindowLong(MdiClient.Handle, (int)Win32.GetWindowLongIndex.GWL_EXSTYLE, exStyle);
+                        _ = NativeMethods.SetWindowLong(MdiClient.Handle, (int)Win32.GetWindowLongIndex.GWL_STYLE, style);
+                        _ = NativeMethods.SetWindowLong(MdiClient.Handle, (int)Win32.GetWindowLongIndex.GWL_EXSTYLE, exStyle);
                     }
 
                     // Cause an update of the non-client area.
@@ -115,62 +115,58 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             public MdiClient MdiClient
             {
-                get { return m_mdiClient; }
+                get { return _mdiClient; }
             }
 
             [Browsable(false)]
             [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public Form ParentForm
             {
-                get { return m_parentForm; }
+                get { return _parentForm; }
                 set
                 {
                     // If the ParentForm has previously been set,
                     // unwire events connected to the old parent.
-                    if (m_parentForm != null)
+                    if (_parentForm != null)
                     {
-                        m_parentForm.HandleCreated -= new EventHandler(ParentFormHandleCreated);
-                        m_parentForm.MdiChildActivate -= new EventHandler(ParentFormMdiChildActivate);
+                        _parentForm.HandleCreated -= new EventHandler(ParentFormHandleCreated);
+                        _parentForm.MdiChildActivate -= new EventHandler(ParentFormMdiChildActivate);
                     }
 
-                    m_parentForm = value;
+                    _parentForm = value;
 
-                    if (m_parentForm == null)
+                    if (_parentForm == null)
                         return;
 
                     // If the parent form has not been created yet,
                     // wait to initialize the MDI client until it is.
-                    if (m_parentForm.IsHandleCreated)
+                    if (_parentForm.IsHandleCreated)
                     {
                         InitializeMdiClient();
                         RefreshProperties();
                     }
                     else
-                        m_parentForm.HandleCreated += new EventHandler(ParentFormHandleCreated);
+                        _parentForm.HandleCreated += new EventHandler(ParentFormHandleCreated);
 
-                    m_parentForm.MdiChildActivate += new EventHandler(ParentFormMdiChildActivate);
+                    _parentForm.MdiChildActivate += new EventHandler(ParentFormMdiChildActivate);
                 }
             }
 
             public ISite Site
             {
-                get { return m_site; }
+                get { return _site; }
                 set
                 {
-                    m_site = value;
+                    _site = value;
 
-                    if (m_site == null)
+                    if (_site == null)
                         return;
 
                     // If the component is dropped onto a form during design-time,
                     // set the ParentForm property.
                     IDesignerHost host = (value.GetService(typeof(IDesignerHost)) as IDesignerHost);
-                    if (host != null)
-                    {
-                        Form parent = host.RootComponent as Form;
-                        if (parent != null)
-                            ParentForm = parent;
-                    }
+                    if (host != null && host.RootComponent is Form parent)
+                        ParentForm = parent;
                 }
             }
 
@@ -192,22 +188,19 @@ namespace WeifenLuo.WinFormsUI.Docking
             protected virtual void OnHandleAssigned(EventArgs e)
             {
                 // Raise the HandleAssigned event.
-                if (HandleAssigned != null)
-                    HandleAssigned(this, e);
+                HandleAssigned?.Invoke(this, e);
             }
 
             protected virtual void OnMdiChildActivate(EventArgs e)
             {
                 // Raise the MdiChildActivate event
-                if (MdiChildActivate != null)
-                    MdiChildActivate(this, e);
+                MdiChildActivate?.Invoke(this, e);
             }
 
             protected virtual void OnLayout(LayoutEventArgs e)
             {
                 // Raise the Layout event
-                if (Layout != null)
-                    Layout(this, e);
+                Layout?.Invoke(this, e);
             }
 
             public event PaintEventHandler Paint;
@@ -215,8 +208,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             protected virtual void OnPaint(PaintEventArgs e)
             {
                 // Raise the Paint event.
-                if (Paint != null)
-                    Paint(this, e);
+                Paint?.Invoke(this, e);
             }
 
             protected override void WndProc(ref Message m)
@@ -226,12 +218,9 @@ namespace WeifenLuo.WinFormsUI.Docking
                     case (int)Win32.Msgs.WM_NCCALCSIZE:
                         // If AutoScroll is set to false, hide the scrollbars when the control
                         // calculates its non-client area.
-                        if (!AutoScroll)
+                        if (!AutoScroll && !Win32Helper.IsRunningOnMono)
                         {
-                            if (!Win32Helper.IsRunningOnMono)
-                            {
-                                NativeMethods.ShowScrollBar(m.HWnd, (int)Win32.ScrollBars.SB_BOTH, 0 /*false*/);
-                            }
+                            _ = NativeMethods.ShowScrollBar(m.HWnd, (int)Win32.ScrollBars.SB_BOTH, 0 /*false*/);
                         }
 
                         break;
@@ -243,7 +232,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             private void ParentFormHandleCreated(object sender, EventArgs e)
             {
                 // The form has been created, unwire the event, and initialize the MdiClient.
-                this.m_parentForm.HandleCreated -= new EventHandler(ParentFormHandleCreated);
+                this._parentForm.HandleCreated -= new EventHandler(ParentFormHandleCreated);
                 InitializeMdiClient();
                 RefreshProperties();
             }
@@ -262,10 +251,10 @@ namespace WeifenLuo.WinFormsUI.Docking
             {
                 // If the MdiClient handle has been released, drop the reference and
                 // release the handle.
-                if (m_mdiClient != null)
+                if (_mdiClient != null)
                 {
-                    m_mdiClient.HandleDestroyed -= new EventHandler(MdiClientHandleDestroyed);
-                    m_mdiClient = null;
+                    _mdiClient.HandleDestroyed -= new EventHandler(MdiClientHandleDestroyed);
+                    _mdiClient = null;
                 }
 
                 ReleaseHandle();
@@ -290,8 +279,8 @@ namespace WeifenLuo.WinFormsUI.Docking
                     // If the form is an MDI container, it will contain an MdiClient control
                     // just as it would any other control.
 
-                    m_mdiClient = control as MdiClient;
-                    if (m_mdiClient == null)
+                    _mdiClient = control as MdiClient;
+                    if (_mdiClient == null)
                         continue;
 
                     // Assign the MdiClient Handle to the NativeWindow.
@@ -312,8 +301,8 @@ namespace WeifenLuo.WinFormsUI.Docking
             private void RefreshProperties()
             {
                 // Refresh all the properties
-                BorderStyle = m_borderStyle;
-                AutoScroll = m_autoScroll;
+                BorderStyle = _borderStyle;
+                AutoScroll = _autoScroll;
             }
 
             private void UpdateStyles()
@@ -322,7 +311,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 // control's Invalidate method does not affect the non-client area.
                 // Instead use a Win32 call to signal the style has changed.
                 if (!Win32Helper.IsRunningOnMono)
-                    NativeMethods.SetWindowPos(MdiClient.Handle, IntPtr.Zero, 0, 0, 0, 0,
+                    _ = NativeMethods.SetWindowPos(MdiClient.Handle, IntPtr.Zero, 0, 0, 0, 0,
                         Win32.FlagsSetWindowPos.SWP_NOACTIVATE |
                         Win32.FlagsSetWindowPos.SWP_NOMOVE |
                         Win32.FlagsSetWindowPos.SWP_NOSIZE |
@@ -332,18 +321,18 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private MdiClientController m_mdiClientController = null;
+        private MdiClientController _mdiClientController = null;
         private MdiClientController GetMdiClientController()
         {
-            if (m_mdiClientController == null)
+            if (_mdiClientController == null)
             {
-                m_mdiClientController = new MdiClientController();
-                m_mdiClientController.HandleAssigned += new EventHandler(MdiClientHandleAssigned);
-                m_mdiClientController.MdiChildActivate += new EventHandler(ParentFormMdiChildActivate);
-                m_mdiClientController.Layout += new LayoutEventHandler(MdiClient_Layout);
+                _mdiClientController = new MdiClientController();
+                _mdiClientController.HandleAssigned += new EventHandler(MdiClientHandleAssigned);
+                _mdiClientController.MdiChildActivate += new EventHandler(ParentFormMdiChildActivate);
+                _mdiClientController.Layout += new LayoutEventHandler(MdiClient_Layout);
             }
 
-            return m_mdiClientController;
+            return _mdiClientController;
         }
 
         private void ParentFormMdiChildActivate(object sender, EventArgs e)
@@ -351,8 +340,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (GetMdiClientController().ParentForm == null)
                 return;
 
-            IDockContent content = GetMdiClientController().ParentForm.ActiveMdiChild as IDockContent;
-            if (content == null)
+            if (GetMdiClientController().ParentForm.ActiveMdiChild is not IDockContent content)
                 return;
 
             if (content.DockHandler.DockPanel == this && content.DockHandler.Pane != null)
@@ -380,20 +368,17 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         private void SuspendMdiClientLayout()
         {
-            if (GetMdiClientController().MdiClient != null)
-                GetMdiClientController().MdiClient.SuspendLayout();
+            GetMdiClientController().MdiClient?.SuspendLayout();
         }
 
         private void ResumeMdiClientLayout(bool perform)
         {
-            if (GetMdiClientController().MdiClient != null)
-                GetMdiClientController().MdiClient.ResumeLayout(perform);
+            GetMdiClientController().MdiClient?.ResumeLayout(perform);
         }
 
         private void PerformMdiClientLayout()
         {
-            if (GetMdiClientController().MdiClient != null)
-                GetMdiClientController().MdiClient.PerformLayout();
+            GetMdiClientController().MdiClient?.PerformLayout();
         }
 
         // Called when:

@@ -13,7 +13,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         public VS2012BlueTheme()
             : base(Decompress(ThemeVS2012.Resources.vs2012blue_vstheme), new VS2013DockPaneSplitterControlFactory(), new VS2013WindowSplitterControlFactory())
         {
-            ColorPalette.TabSelectedInactive.Background = ColorTranslator.FromHtml("#FF3D5277");// TODO: from theme .FromHtml("#FF4D6082");
+            ColorPalette.TabSelectedInactive.Background = ColorTranslator.FromHtml("#FF3D5277");
         }
     }
 }

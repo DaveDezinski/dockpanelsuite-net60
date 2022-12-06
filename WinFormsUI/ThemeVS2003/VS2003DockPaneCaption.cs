@@ -23,8 +23,8 @@ namespace WeifenLuo.WinFormsUI.Docking
         private const int _ButtonGapRight = 2;
         #endregion
 
-        private InertButton m_buttonClose;
-        private InertButton m_buttonAutoHide;
+        private readonly InertButton _buttonClose;
+        private readonly InertButton _buttonAutoHide;
 
         /// <include file='CodeDoc/DockPaneCaptionVS2003.xml' path='//CodeDoc/Class[@name="DockPaneCaptionVS2003"]/Construct[@name="(DockPane)"]/*'/>
         protected internal VS2003DockPaneCaption(DockPane pane) : base(pane)
@@ -33,18 +33,18 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             Font = SystemInformation.MenuFont;
 
-            m_buttonClose = new InertButton(ImageCloseEnabled, ImageCloseDisabled);
-            m_buttonAutoHide = new InertButton();
+            _buttonClose = new InertButton(ImageCloseEnabled, ImageCloseDisabled);
+            _buttonAutoHide = new InertButton();
 
-            m_buttonClose.ToolTipText = ToolTipClose;
-            m_buttonClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            m_buttonClose.Click += new EventHandler(this.Close_Click);
+            _buttonClose.ToolTipText = ToolTipClose;
+            _buttonClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _buttonClose.Click += new EventHandler(this.Close_Click);
 
-            m_buttonAutoHide.ToolTipText = ToolTipAutoHide;
-            m_buttonAutoHide.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            m_buttonAutoHide.Click += new EventHandler(AutoHide_Click);
+            _buttonAutoHide.ToolTipText = ToolTipAutoHide;
+            _buttonAutoHide.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _buttonAutoHide.Click += new EventHandler(AutoHide_Click);
 
-            Controls.AddRange(new Control[]	{	m_buttonClose, m_buttonAutoHide });
+            Controls.AddRange(new Control[]	{	_buttonClose, _buttonAutoHide });
 
             ResumeLayout();
         }
@@ -110,8 +110,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageCloseEnabled == null)
-                    _imageCloseEnabled = Resources.DockPaneCaption_CloseEnabled;
+                _imageCloseEnabled ??= Resources.DockPaneCaption_CloseEnabled;
                 return _imageCloseEnabled;
             }
         }
@@ -122,8 +121,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageCloseDisabled == null)
-                    _imageCloseDisabled = Resources.DockPaneCaption_CloseDisabled;
+                _imageCloseDisabled ??= Resources.DockPaneCaption_CloseDisabled;
                 return _imageCloseDisabled;
             }
         }
@@ -134,8 +132,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageAutoHideYes == null)
-                    _imageAutoHideYes = Resources.DockPaneCaption_AutoHideYes;
+                _imageAutoHideYes ??= Resources.DockPaneCaption_AutoHideYes;
                 return _imageAutoHideYes;
             }
         }
@@ -146,8 +143,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_imageAutoHideNo == null)
-                    _imageAutoHideNo = Resources.DockPaneCaption_AutoHideNo;
+                _imageAutoHideNo ??= Resources.DockPaneCaption_AutoHideNo;
                 return _imageAutoHideNo;
             }
         }
@@ -158,8 +154,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_toolTipClose == null)
-                    _toolTipClose = WeifenLuo.WinFormsUI.ThemeVS2003.Strings.DockPaneCaption_ToolTipClose;
+                _toolTipClose ??= ThemeVS2003.Strings.DockPaneCaption_ToolTipClose;
                 return _toolTipClose;
             }
         }
@@ -170,8 +165,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get
             {	
-                if (_toolTipAutoHide == null)
-                    _toolTipAutoHide = WeifenLuo.WinFormsUI.ThemeVS2003.Strings.DockPaneCaption_ToolTipAutoHide;
+                _toolTipAutoHide ??= ThemeVS2003.Strings.DockPaneCaption_ToolTipAutoHide;
                 return _toolTipAutoHide;
             }
         }
@@ -218,7 +212,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             get	{	return Color.Empty;	}
         }
 
-        private static TextFormatFlags _textFormat =
+        private static readonly TextFormatFlags _textFormat =
             TextFormatFlags.SingleLine |
             TextFormatFlags.EndEllipsis |
             TextFormatFlags.VerticalCenter;
@@ -259,27 +253,25 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             if (!DockPane.IsActivated)
             {
-                using (Pen pen = new Pen(InactiveBorderColor))
-                {
-                    g.DrawLine(pen, rectCaption.X + 1, rectCaption.Y, rectCaption.X + rectCaption.Width - 2, rectCaption.Y);
-                    g.DrawLine(pen, rectCaption.X + 1, rectCaption.Y + rectCaption.Height - 1, rectCaption.X + rectCaption.Width - 2, rectCaption.Y + rectCaption.Height - 1);
-                    g.DrawLine(pen, rectCaption.X, rectCaption.Y + 1, rectCaption.X, rectCaption.Y + rectCaption.Height - 2);
-                    g.DrawLine(pen, rectCaption.X + rectCaption.Width - 1, rectCaption.Y + 1, rectCaption.X + rectCaption.Width - 1, rectCaption.Y + rectCaption.Height - 2);
-                }
+                using Pen pen = new(InactiveBorderColor);
+                g.DrawLine(pen, rectCaption.X + 1, rectCaption.Y, rectCaption.X + rectCaption.Width - 2, rectCaption.Y);
+                g.DrawLine(pen, rectCaption.X + 1, rectCaption.Y + rectCaption.Height - 1, rectCaption.X + rectCaption.Width - 2, rectCaption.Y + rectCaption.Height - 1);
+                g.DrawLine(pen, rectCaption.X, rectCaption.Y + 1, rectCaption.X, rectCaption.Y + rectCaption.Height - 2);
+                g.DrawLine(pen, rectCaption.X + rectCaption.Width - 1, rectCaption.Y + 1, rectCaption.X + rectCaption.Width - 1, rectCaption.Y + rectCaption.Height - 2);
             }
 
-            m_buttonClose.ForeColor = m_buttonAutoHide.ForeColor = (DockPane.IsActivated ? ActiveTextColor : InactiveTextColor);
-            m_buttonClose.BorderColor = m_buttonAutoHide.BorderColor = (DockPane.IsActivated ? ActiveButtonBorderColor : InactiveButtonBorderColor);
+            _buttonClose.ForeColor = _buttonAutoHide.ForeColor = (DockPane.IsActivated ? ActiveTextColor : InactiveTextColor);
+            _buttonClose.BorderColor = _buttonAutoHide.BorderColor = (DockPane.IsActivated ? ActiveButtonBorderColor : InactiveButtonBorderColor);
 
             Rectangle rectCaptionText = rectCaption;
             rectCaptionText.X += TextGapLeft;
             if (ShouldShowCloseButton && ShouldShowAutoHideButton)
                 rectCaptionText.Width = rectCaption.Width - ButtonGapRight
                     - ButtonGapLeft	- TextGapLeft - TextGapRight -
-                    (m_buttonAutoHide.Width + ButtonGapBetween + m_buttonClose.Width);
+                    (_buttonAutoHide.Width + ButtonGapBetween + _buttonClose.Width);
             else if (ShouldShowCloseButton || ShouldShowAutoHideButton)
                 rectCaptionText.Width = rectCaption.Width - ButtonGapRight
-                    - ButtonGapLeft	- TextGapLeft - TextGapRight - m_buttonClose.Width;
+                    - ButtonGapLeft	- TextGapLeft - TextGapRight - _buttonClose.Width;
             else
                 rectCaptionText.Width = rectCaption.Width - TextGapLeft - TextGapRight;
             rectCaptionText.Y += TextGapTop;
@@ -303,7 +295,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         private bool ShouldShowCloseButton
         {
-            get	{	return (DockPane.ActiveContent != null)? DockPane.ActiveContent.DockHandler.CloseButton : false;	}
+            get	{	return (DockPane.ActiveContent != null) && DockPane.ActiveContent.DockHandler.CloseButton;	}
         }
 
         private bool ShouldShowAutoHideButton
@@ -313,9 +305,9 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         private void SetButtons()
         {
-            m_buttonClose.Visible = ShouldShowCloseButton;
-            m_buttonAutoHide.Visible = ShouldShowAutoHideButton;
-            m_buttonAutoHide.ImageEnabled = DockPane.IsAutoHide ? ImageAutoHideYes : ImageAutoHideNo;
+            _buttonClose.Visible = ShouldShowCloseButton;
+            _buttonAutoHide.Visible = ShouldShowAutoHideButton;
+            _buttonAutoHide.ImageEnabled = DockPane.IsAutoHide ? ImageAutoHideYes : ImageAutoHideNo;
             
             SetButtonsPosition();
         }
@@ -332,18 +324,18 @@ namespace WeifenLuo.WinFormsUI.Docking
                 buttonWidth = buttonWidth * height / buttonHeight;
                 buttonHeight = height;
             }
-            m_buttonClose.SuspendLayout();
-            m_buttonAutoHide.SuspendLayout();
-            Size buttonSize = new Size(buttonWidth, buttonHeight);
-            m_buttonClose.Size = m_buttonAutoHide.Size = buttonSize;
-            int x = rectCaption.X + rectCaption.Width - 1 - ButtonGapRight - m_buttonClose.Width;
+            _buttonClose.SuspendLayout();
+            _buttonAutoHide.SuspendLayout();
+            Size buttonSize = new(buttonWidth, buttonHeight);
+            _buttonClose.Size = _buttonAutoHide.Size = buttonSize;
+            int x = rectCaption.X + rectCaption.Width - 1 - ButtonGapRight - _buttonClose.Width;
             int y = rectCaption.Y + ButtonGapTop;
-            Point point = m_buttonClose.Location = new Point(x, y);
+            Point point = _buttonClose.Location = new Point(x, y);
             if (ShouldShowCloseButton)
-                point.Offset(-(m_buttonAutoHide.Width + ButtonGapBetween), 0);
-            m_buttonAutoHide.Location = point;
-            m_buttonClose.ResumeLayout();
-            m_buttonAutoHide.ResumeLayout();
+                point.Offset(-(_buttonAutoHide.Width + ButtonGapBetween), 0);
+            _buttonAutoHide.Location = point;
+            _buttonClose.ResumeLayout();
+            _buttonAutoHide.ResumeLayout();
         }
 
         private void Close_Click(object sender, EventArgs e)

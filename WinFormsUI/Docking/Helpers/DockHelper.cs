@@ -18,22 +18,22 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public static bool IsDockStateValid(DockState dockState, DockAreas dockableAreas)
         {
-            if (((dockableAreas & DockAreas.Float) == 0) &&
+            if (!dockableAreas.HasFlag(DockAreas.Float) &&
                 (dockState == DockState.Float))
                 return false;
-            else if (((dockableAreas & DockAreas.Document) == 0) &&
+            else if (!dockableAreas.HasFlag(DockAreas.Document) &&
                 (dockState == DockState.Document))
                 return false;
-            else if (((dockableAreas & DockAreas.DockLeft) == 0) &&
+            else if (!dockableAreas.HasFlag(DockAreas.DockLeft) &&
                 (dockState == DockState.DockLeft || dockState == DockState.DockLeftAutoHide))
                 return false;
-            else if (((dockableAreas & DockAreas.DockRight) == 0) &&
+            else if (!dockableAreas.HasFlag(DockAreas.DockRight) &&
                 (dockState == DockState.DockRight || dockState == DockState.DockRightAutoHide))
                 return false;
-            else if (((dockableAreas & DockAreas.DockTop) == 0) &&
+            else if (!dockableAreas.HasFlag(DockAreas.DockTop) &&
                 (dockState == DockState.DockTop || dockState == DockState.DockTopAutoHide))
                 return false;
-            else if (((dockableAreas & DockAreas.DockBottom) == 0) &&
+            else if (!dockableAreas.HasFlag(DockAreas.DockBottom) &&
                 (dockState == DockState.DockBottom || dockState == DockState.DockBottomAutoHide))
                 return false;
             else
@@ -74,30 +74,29 @@ namespace WeifenLuo.WinFormsUI.Docking
         public static DockPane PaneAtPoint(Point pt, DockPanel dockPanel)
         {
             if (!Win32Helper.IsRunningOnMono)
+            {
                 for (Control control = Win32Helper.ControlAtPoint(pt); control != null; control = control.Parent)
                 {
-                    IDockContent content = control as IDockContent;
-                    if (content != null && content.DockHandler.DockPanel == dockPanel)
+                    if (control is IDockContent content && content.DockHandler.DockPanel == dockPanel)
                         return content.DockHandler.Pane;
 
-                    DockPane pane = control as DockPane;
-                    if (pane != null && pane.DockPanel == dockPanel)
+                    if (control is DockPane pane && pane.DockPanel == dockPanel)
                         return pane;
                 }
-
+            }
             return null;
         }
 
         public static FloatWindow FloatWindowAtPoint(Point pt, DockPanel dockPanel)
         {
             if (!Win32Helper.IsRunningOnMono)
+            {
                 for (Control control = Win32Helper.ControlAtPoint(pt); control != null; control = control.Parent)
                 {
-                    FloatWindow floatWindow = control as FloatWindow;
-                    if (floatWindow != null && floatWindow.DockPanel == dockPanel)
+                    if (control is FloatWindow floatWindow && floatWindow.DockPanel == dockPanel)
                         return floatWindow;
                 }
-
+            }
             return null;
         }
     }

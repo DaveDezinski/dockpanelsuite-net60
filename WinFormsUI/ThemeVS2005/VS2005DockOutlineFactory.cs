@@ -17,17 +17,17 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
         {
             public VS2005DockOutline()
             {
-                m_dragForm = new DragForm();
+                _dragForm = new DragForm();
                 SetDragForm(Rectangle.Empty);
                 DragForm.BackColor = SystemColors.ActiveCaption;
                 DragForm.Opacity = 0.5;
                 DragForm.Show(false);
             }
 
-            DragForm m_dragForm;
+            private readonly DragForm _dragForm;
             private DragForm DragForm
             {
-                get { return m_dragForm; }
+                get { return _dragForm; }
             }
 
             protected override void OnShow()

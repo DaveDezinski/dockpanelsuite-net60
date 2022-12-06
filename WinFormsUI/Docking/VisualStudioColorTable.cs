@@ -5,7 +5,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 {
     public class VisualStudioColorTable : ProfessionalColorTable
     {
-        private DockPanelColorPalette _palette;
+        private readonly DockPanelColorPalette _palette;
 
         public VisualStudioColorTable(DockPanelColorPalette palette)
         {
@@ -42,16 +42,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             get { return _palette.CommandBarToolbarButtonChecked.Background; }
         }
 
-        //public override Color ButtonCheckedHighlight
-        //{
-        //    get { return _palette.CommandBarMenuPopupDefault.CheckmarkBackground; }
-        //}
-
-        //public override Color ButtonCheckedHighlightBorder
-        //{
-        //    get { return _palette.CommandBarMenuPopupDefault.Checkmark; }
-        //}
-
         public override Color CheckBackground
         {
             get { return _palette.CommandBarMenuPopupDefault.CheckmarkBackground; }
@@ -66,16 +56,6 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get { return _palette.CommandBarMenuPopupHovered.CheckmarkBackground; }
         }
-
-        //public override Color ButtonPressedHighlight
-        //{
-        //    get { return ButtonPressedGradientMiddle; }
-        //}
-
-        //public override Color ButtonPressedHighlightBorder
-        //{
-        //    get { return ButtonPressedBorder; }
-        //}
 
         public override Color ButtonPressedBorder
         {
@@ -112,15 +92,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             get { return _palette.CommandBarMenuPopupDefault.BackgroundTop; }
         }
 
-        //public override Color ButtonSelectedHighlight
-        //{
-        //    get { return Color.Red; }
-        //}
-        //public override Color ButtonSelectedHighlightBorder
-        //{
-        //    get { return ButtonSelectedBorder; }
-        //}
-        
         public override Color ButtonSelectedBorder
         {
             get { return _palette.CommandBarToolbarButtonChecked.Border; }
@@ -181,21 +152,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             get { return _palette.CommandBarMenuPopupDefault.IconBackground; }
         }
 
-        //public override Color ImageMarginRevealedGradientBegin
-        //{
-        //    get { return Color.FromArgb(255, 231, 232, 236); }
-        //}
-
-        //public override Color ImageMarginRevealedGradientMiddle
-        //{
-        //    get { return Color.FromArgb(255, 231, 232, 236); }
-        //}
-
-        //public override Color ImageMarginRevealedGradientEnd
-        //{
-        //    get { return Color.FromArgb(255, 231, 232, 236); }
-        //}
-
         public override Color MenuStripGradientBegin
         {
             get { return _palette.CommandBarMenuDefault.Background; }
@@ -215,15 +171,6 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             get { return _palette.CommandBarMenuPopupDefault.Border; }
         }
-
-        //public override Color RaftingContainerGradientBegin
-        //{
-        //    get { return Color.FromArgb(255, 186, 192, 201); }
-        //}
-        //public override Color RaftingContainerGradientEnd
-        //{
-        //    get { return Color.FromArgb(255, 186, 192, 201); }
-        //}
 
         public override Color SeparatorDark
         {

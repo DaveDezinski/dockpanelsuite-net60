@@ -1,14 +1,13 @@
 using System.Drawing;
-using System.Security.Permissions;
 using System.Windows.Forms;
 
 namespace WeifenLuo.WinFormsUI.Docking
 {
     public abstract class DockPaneCaptionBase : Control
     {
-        protected internal DockPaneCaptionBase(DockPane pane)
+        protected private DockPaneCaptionBase(DockPane pane)
         {
-            m_dockPane = pane;
+            _dockPane = pane;
 
             SetStyle(ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.ResizeRedraw |
@@ -17,10 +16,10 @@ namespace WeifenLuo.WinFormsUI.Docking
             SetStyle(ControlStyles.Selectable, false);
         }
 
-        private DockPane m_dockPane;
+        private readonly DockPane _dockPane;
         public DockPane DockPane
         {
-            get { return m_dockPane; }
+            get { return _dockPane; }
         }
 
         protected DockPane.AppearanceStyle Appearance

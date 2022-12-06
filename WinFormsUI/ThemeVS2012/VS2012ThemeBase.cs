@@ -8,7 +8,7 @@
     /// </summary>
     public abstract class VS2012ThemeBase : ThemeBase
     {
-        public VS2012ThemeBase(byte[] resources, IDockPaneSplitterControlFactory splitterFactory, IWindowSplitterControlFactory windowsSplitterFactory)
+        protected VS2012ThemeBase(byte[] resources, IDockPaneSplitterControlFactory splitterFactory, IWindowSplitterControlFactory windowsSplitterFactory)
         {
             ColorPalette = new DockPanelColorPalette(new VS2012PaletteFactory(resources));
             Skin = new DockPanelSkin();

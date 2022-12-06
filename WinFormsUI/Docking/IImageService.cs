@@ -154,7 +154,6 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             var width = maskBack.Width;
             var height = maskBack.Height;
-            var rect = new Rectangle(0, 0, width, height);
             Bitmap arrowOut = null;
 
             if (maskArrow != null)
@@ -173,7 +172,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 coreOut = MaskImages(coreIn, maskCore);
             }
 
-            Bitmap backIn = new Bitmap(width, height);
+            Bitmap backIn = new(width, height);
             using (Graphics gfx = Graphics.FromImage(backIn))
             {
                 SolidBrush brush = painting.GetBrush(background);
@@ -272,40 +271,38 @@ namespace WeifenLuo.WinFormsUI.Docking
         public static Bitmap GetFiveBackground(Bitmap mask, Color innerBorder, Color outerBorder, IPaintingService painting)
         {
             // TODO: calculate points using functions.
-            using (var input = GetLayerImage(innerBorder, mask.Width, painting))
+            using var input = GetLayerImage(innerBorder, mask.Width, painting);
+            using (var gfx = Graphics.FromImage(input))
             {
-                using (var gfx = Graphics.FromImage(input))
+                var pen = painting.GetPen(outerBorder);
+                gfx.DrawLines(pen, new[]
                 {
-                    var pen = painting.GetPen(outerBorder);
-                    gfx.DrawLines(pen, new[]
-                    {
                         new Point(36, 25),new Point(36, 0),
                         new Point(75, 0), new Point(75, 25)
                     });
-                    gfx.DrawLines(pen, new[]
-                    {
+                gfx.DrawLines(pen, new[]
+                {
                         new Point(86, 36), new Point(111, 36),
                         new Point(111, 75), new Point(86, 75)
                     });
-                    gfx.DrawLines(pen, new[]
-                    {
+                gfx.DrawLines(pen, new[]
+                {
                         new Point(75, 86), new Point(75, 111),
                         new Point(36, 111), new Point(36, 86)
                     });
-                    gfx.DrawLines(pen, new[]
-                    {
+                gfx.DrawLines(pen, new[]
+                {
                         new Point(25, 75), new Point(0, 75),
                         new Point(0, 36), new Point(25, 36)
                     });
-                    var pen2 = painting.GetPen(outerBorder, 2);
-                    gfx.DrawLine(pen2, new Point(36, 25), new Point(25, 36));
-                    gfx.DrawLine(pen2, new Point(75, 25), new Point(86, 36));
-                    gfx.DrawLine(pen2, new Point(86, 75), new Point(75, 86));
-                    gfx.DrawLine(pen2, new Point(36, 86), new Point(25, 75));
-                }
-
-                return MaskImages(input, mask);
+                var pen2 = painting.GetPen(outerBorder, 2);
+                gfx.DrawLine(pen2, new Point(36, 25), new Point(25, 36));
+                gfx.DrawLine(pen2, new Point(75, 25), new Point(86, 36));
+                gfx.DrawLine(pen2, new Point(86, 75), new Point(75, 86));
+                gfx.DrawLine(pen2, new Point(36, 86), new Point(25, 75));
             }
+
+            return MaskImages(input, mask);
         }
     }
 

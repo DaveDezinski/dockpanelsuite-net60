@@ -1,8 +1,6 @@
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-//using Vanara.PInvoke;
-using System.Diagnostics;
 
 namespace WeifenLuo.WinFormsUI.Docking
 {
@@ -38,31 +36,31 @@ namespace WeifenLuo.WinFormsUI.Docking
             int Height { get; }
         }
 
-        public struct HotSpotIndex
+        public readonly struct HotSpotIndex
         {
             public HotSpotIndex(int x, int y, DockStyle dockStyle)
             {
-                m_x = x;
-                m_y = y;
-                m_dockStyle = dockStyle;
+                _x = x;
+                _y = y;
+                _dockStyle = dockStyle;
             }
 
-            private int m_x;
+            private readonly int _x;
             public int X
             {
-                get { return m_x; }
+                get { return _x; }
             }
 
-            private int m_y;
+            private readonly int _y;
             public int Y
             {
-                get { return m_y; }
+                get { return _y; }
             }
 
-            private DockStyle m_dockStyle;
+            private readonly DockStyle _dockStyle;
             public DockStyle DockStyle
             {
-                get { return m_dockStyle; }
+                get { return _dockStyle; }
             }
         }
 
@@ -73,14 +71,14 @@ namespace WeifenLuo.WinFormsUI.Docking
             public class DockIndicator : DragForm
             {
                 #region consts
-                private int _PanelIndicatorMargin = 10;
+                private readonly int _PanelIndicatorMargin = 10;
                 #endregion
 
-                private DockDragHandler m_dragHandler;
+                private readonly DockDragHandler _dragHandler;
 
                 public DockIndicator(DockDragHandler dragHandler)
                 {
-                    m_dragHandler = dragHandler;
+                    _dragHandler = dragHandler;
                     Controls.AddRange(new[] {
                         (Control)PaneDiamond,
                         (Control)PanelLeft,
@@ -92,95 +90,83 @@ namespace WeifenLuo.WinFormsUI.Docking
                     Region = new Region(Rectangle.Empty);
                 }
 
-                private IPaneIndicator m_paneDiamond = null;
+                private IPaneIndicator _paneDiamond = null;
                 private IPaneIndicator PaneDiamond
                 {
                     get
                     {
-                        if (m_paneDiamond == null)
-                            m_paneDiamond = m_dragHandler.DockPanel.Theme.Extender.PaneIndicatorFactory.CreatePaneIndicator(m_dragHandler.DockPanel.Theme);
-
-                        return m_paneDiamond;
+                        _paneDiamond ??= _dragHandler.DockPanel.Theme.Extender.PaneIndicatorFactory.CreatePaneIndicator(_dragHandler.DockPanel.Theme);
+                        return _paneDiamond;
                     }
                 }
 
-                private IPanelIndicator m_panelLeft = null;
+                private IPanelIndicator _panelLeft = null;
                 private IPanelIndicator PanelLeft
                 {
                     get
                     {
-                        if (m_panelLeft == null)
-                            m_panelLeft = m_dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Left, m_dragHandler.DockPanel.Theme);
-
-                        return m_panelLeft;
+                        _panelLeft ??= _dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Left, _dragHandler.DockPanel.Theme);
+                        return _panelLeft;
                     }
                 }
 
-                private IPanelIndicator m_panelRight = null;
+                private IPanelIndicator _panelRight = null;
                 private IPanelIndicator PanelRight
                 {
                     get
                     {
-                        if (m_panelRight == null)
-                            m_panelRight = m_dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Right, m_dragHandler.DockPanel.Theme);
-
-                        return m_panelRight;
+                        _panelRight ??= _dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Right, _dragHandler.DockPanel.Theme);
+                        return _panelRight;
                     }
                 }
 
-                private IPanelIndicator m_panelTop = null;
+                private IPanelIndicator _panelTop = null;
                 private IPanelIndicator PanelTop
                 {
                     get
                     {
-                        if (m_panelTop == null)
-                            m_panelTop = m_dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Top, m_dragHandler.DockPanel.Theme);
-
-                        return m_panelTop;
+                        _panelTop ??= _dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Top, _dragHandler.DockPanel.Theme);
+                        return _panelTop;
                     }
                 }
 
-                private IPanelIndicator m_panelBottom = null;
+                private IPanelIndicator _panelBottom = null;
                 private IPanelIndicator PanelBottom
                 {
                     get
                     {
-                        if (m_panelBottom == null)
-                            m_panelBottom = m_dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Bottom, m_dragHandler.DockPanel.Theme);
-
-                        return m_panelBottom;
+                        _panelBottom ??= _dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Bottom, _dragHandler.DockPanel.Theme);
+                        return _panelBottom;
                     }
                 }
 
-                private IPanelIndicator m_panelFill = null;
+                private IPanelIndicator _panelFill = null;
                 private IPanelIndicator PanelFill
                 {
                     get
                     {
-                        if (m_panelFill == null)
-                            m_panelFill = m_dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Fill, m_dragHandler.DockPanel.Theme);
-
-                        return m_panelFill;
+                        _panelFill ??= _dragHandler.DockPanel.Theme.Extender.PanelIndicatorFactory.CreatePanelIndicator(DockStyle.Fill, _dragHandler.DockPanel.Theme);
+                        return _panelFill;
                     }
                 }
 
-                private bool m_fullPanelEdge = false;
+                private bool _fullPanelEdge = false;
                 public bool FullPanelEdge
                 {
-                    get { return m_fullPanelEdge; }
+                    get { return _fullPanelEdge; }
                     set
                     {
-                        if (m_fullPanelEdge == value)
+                        if (_fullPanelEdge == value)
                             return;
 
-                        m_fullPanelEdge = value;
+                        _fullPanelEdge = value;
                         RefreshChanges();
                     }
                 }
 
                 public DockDragHandler DragHandler
                 {
-                    get { return m_dragHandler; }
+                    get { return _dragHandler; }
                 }
 
                 public DockPanel DockPanel
@@ -188,35 +174,35 @@ namespace WeifenLuo.WinFormsUI.Docking
                     get { return DragHandler.DockPanel; }
                 }
 
-                private DockPane m_dockPane = null;
+                private DockPane _dockPane = null;
                 public DockPane DockPane
                 {
-                    get { return m_dockPane; }
+                    get { return _dockPane; }
                     internal set
                     {
-                        if (m_dockPane == value)
+                        if (_dockPane == value)
                             return;
 
                         DockPane oldDisplayingPane = DisplayingPane;
-                        m_dockPane = value;
+                        _dockPane = value;
                         if (oldDisplayingPane != DisplayingPane)
                             RefreshChanges();
                     }
                 }
 
-                private IHitTest m_hitTest = null;
+                private IHitTest _hitTest = null;
                 private IHitTest HitTestResult
                 {
-                    get { return m_hitTest; }
+                    get { return _hitTest; }
                     set
                     {
-                        if (m_hitTest == value)
+                        if (_hitTest == value)
                             return;
 
-                        if (m_hitTest != null)
-                            m_hitTest.Status = DockStyle.None;
+                        if (_hitTest != null)
+                            _hitTest.Status = DockStyle.None;
 
-                        m_hitTest = value;
+                        _hitTest = value;
                     }
                 }
 
@@ -229,25 +215,18 @@ namespace WeifenLuo.WinFormsUI.Docking
                 {
                     if (PatchController.EnablePerScreenDpi == true)
                     {
-                        //SHCore.PROCESS_DPI_AWARENESS value;
-                        //if (SHCore.GetProcessDpiAwareness(Process.GetCurrentProcess().Handle, out value) == HRESULT.S_OK)
-                        //{
-                        //    if (value == SHCore.PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE)
-                        //    {
-                                var allScreens = Screen.AllScreens;
-                                var mousePos = Control.MousePosition;
-                                foreach (var screen in allScreens)
-                                {
-                                    if (screen.Bounds.Contains(mousePos))
-                                    {
-                                        Bounds = screen.Bounds;
-                                    }
-                                }
-                        //    }
-                        //}
+                        var allScreens = Screen.AllScreens;
+                        var mousePos = Control.MousePosition;
+                        foreach (var screen in allScreens)
+                        {
+                            if (screen.Bounds.Contains(mousePos))
+                            {
+                                Bounds = screen.Bounds;
+                            }
+                        }
                     }
 
-                    Region region = new Region(Rectangle.Empty);
+                    Region region = new(Rectangle.Empty);
                     Rectangle rectDockArea = FullPanelEdge ? DockPanel.DockArea : DockPanel.DocumentWindowBounds;
 
                     rectDockArea = RectangleToClient(DockPanel.RectangleToScreen(rectDockArea));
@@ -302,21 +281,19 @@ namespace WeifenLuo.WinFormsUI.Docking
                         Rectangle rect = RectangleToClient(DockPane.RectangleToScreen(DockPane.ClientRectangle));
                         PaneDiamond.Location = new Point(rect.Left + (rect.Width - PaneDiamond.Width) / 2, rect.Top + (rect.Height - PaneDiamond.Height) / 2);
                         PaneDiamond.Visible = true;
-                        using (GraphicsPath graphicsPath = PaneDiamond.DisplayingGraphicsPath.Clone() as GraphicsPath)
-                        {
-                            Point[] pts =
-                                {
-                                    new Point(PaneDiamond.Left, PaneDiamond.Top),
-                                    new Point(PaneDiamond.Right, PaneDiamond.Top),
-                                    new Point(PaneDiamond.Left, PaneDiamond.Bottom)
-                                };
-                            using (Matrix matrix = new Matrix(PaneDiamond.ClientRectangle, pts))
+                        using GraphicsPath graphicsPath = PaneDiamond.DisplayingGraphicsPath.Clone() as GraphicsPath;
+                        Point[] pts =
                             {
-                                graphicsPath.Transform(matrix);
-                            }
-
-                            region.Union(graphicsPath);
+                                new Point(PaneDiamond.Left, PaneDiamond.Top),
+                                new Point(PaneDiamond.Right, PaneDiamond.Top),
+                                new Point(PaneDiamond.Left, PaneDiamond.Bottom)
+                            };
+                        using (Matrix matrix = new(PaneDiamond.ClientRectangle, pts))
+                        {
+                            graphicsPath.Transform(matrix);
                         }
+
+                        region.Union(graphicsPath);
                     }
                     else
                         PaneDiamond.Visible = false;
@@ -403,26 +380,16 @@ namespace WeifenLuo.WinFormsUI.Docking
                 set { base.DragSource = value; }
             }
 
-            private DockOutlineBase m_outline;
+            private DockOutlineBase _outline;
             public DockOutlineBase Outline
             {
-                get { return m_outline; }
-                private set { m_outline = value; }
+                get { return _outline; }
+                private set { _outline = value; }
             }
 
-            private DockIndicator m_indicator;
-            private DockIndicator Indicator
-            {
-                get { return m_indicator; }
-                set { m_indicator = value; }
-            }
+            private DockIndicator Indicator { get; set; }
 
-            private Rectangle m_floatOutlineBounds;
-            private Rectangle FloatOutlineBounds
-            {
-                get { return m_floatOutlineBounds; }
-                set { m_floatOutlineBounds = value; }
-            }
+            private Rectangle FloatOutlineBounds { get; set; }
 
             public void BeginDrag(IDockDragSource dragSource)
             {
@@ -488,21 +455,17 @@ namespace WeifenLuo.WinFormsUI.Docking
                     if (!Outline.FlagTestDrop && DragSource.IsDockStateValid(DockState.Float))
                     {
                         FloatWindow floatWindow = DockHelper.FloatWindowAtPoint(Control.MousePosition, DockPanel);
-                        if (floatWindow != null)
-                            floatWindow.TestDrop(DragSource, Outline);
+                        floatWindow?.TestDrop(DragSource, Outline);
                     }
                 }
                 else
                     Indicator.DockPane = DockHelper.PaneAtPoint(Control.MousePosition, DockPanel);
 
-                if (!Outline.FlagTestDrop)
+                if (!Outline.FlagTestDrop && DragSource.IsDockStateValid(DockState.Float))
                 {
-                    if (DragSource.IsDockStateValid(DockState.Float))
-                    {
-                        Rectangle rect = FloatOutlineBounds;
-                        rect.Offset(Control.MousePosition.X - StartMousePosition.X, Control.MousePosition.Y - StartMousePosition.Y);
-                        Outline.Show(rect);
-                    }
+                    Rectangle rect = FloatOutlineBounds;
+                    rect.Offset(Control.MousePosition.X - StartMousePosition.X, Control.MousePosition.Y - StartMousePosition.Y);
+                    Outline.Show(rect);
                 }
 
                 if (!Outline.FlagTestDrop)
@@ -535,12 +498,11 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private DockDragHandler m_dockDragHandler = null;
+        private DockDragHandler _dockDragHandler = null;
         private DockDragHandler GetDockDragHandler()
         {
-            if (m_dockDragHandler == null)
-                m_dockDragHandler = new DockDragHandler(this);
-            return m_dockDragHandler;
+            _dockDragHandler ??= new DockDragHandler(this);
+            return _dockDragHandler;
         }
 
         internal void BeginDrag(IDockDragSource dragSource)

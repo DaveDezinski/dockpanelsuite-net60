@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,13 +11,13 @@ namespace DockSample
 {
     public partial class MainForm : Form
     {
-        private bool m_bSaveLayout = true;
-        private DeserializeDockContent m_deserializeDockContent;
-        private DummySolutionExplorer m_solutionExplorer;
-        private DummyPropertyWindow m_propertyWindow;
-        private DummyToolbox m_toolbox;
-        private DummyOutputWindow m_outputWindow;
-        private DummyTaskList m_taskList;
+        private bool _saveLayout = true;
+        private readonly DeserializeDockContent _deserializeDockContent;
+        private DummySolutionExplorer _solutionExplorer;
+        private DummyPropertyWindow _propertyWindow;
+        private DummyToolbox _toolbox;
+        private DummyOutputWindow _outputWindow;
+        private DummyTaskList _taskList;
         private bool _showSplash;
         private SplashScreen _splashScreen;
 
@@ -31,8 +32,8 @@ namespace DockSample
 
             showRightToLeft.Checked = (RightToLeft == RightToLeft.Yes);
             RightToLeftLayout = showRightToLeft.Checked;
-            m_solutionExplorer.RightToLeftLayout = RightToLeftLayout;
-            m_deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
+            _solutionExplorer.RightToLeftLayout = RightToLeftLayout;
+            _deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
 
             vsToolStripExtender1.DefaultRenderer = _toolStripProfessionalRenderer;
         }
@@ -61,7 +62,7 @@ namespace DockSample
 
         private DummyDoc CreateNewDocument()
         {
-            DummyDoc dummyDoc = new DummyDoc();
+            DummyDoc dummyDoc = new();
 
             int count = 1;
             string text = $"Document{count}";
@@ -75,10 +76,12 @@ namespace DockSample
             return dummyDoc;
         }
 
-        private DummyDoc CreateNewDocument(string text)
+        private static DummyDoc CreateNewDocument(string text)
         {
-            DummyDoc dummyDoc = new DummyDoc();
-            dummyDoc.Text = text;
+            DummyDoc dummyDoc = new()
+            {
+                Text = text
+            };
             return dummyDoc;
         }
 
@@ -91,11 +94,11 @@ namespace DockSample
             }
             else
             {
-                foreach (IDockContent document in dockPanel.DocumentsToArray())
+                foreach (var handler in dockPanel.Documents.Select(document => document.DockHandler))
                 {
                     // IMPORANT: dispose all panes.
-                    document.DockHandler.DockPanel = null;
-                    document.DockHandler.Close();
+                    handler.DockPanel = null;
+                    handler.Close();
                 }
             }
         }
@@ -103,15 +106,15 @@ namespace DockSample
         private IDockContent GetContentFromPersistString(string persistString)
         {
             if (persistString == typeof(DummySolutionExplorer).ToString())
-                return m_solutionExplorer;
+                return _solutionExplorer;
             else if (persistString == typeof(DummyPropertyWindow).ToString())
-                return m_propertyWindow;
+                return _propertyWindow;
             else if (persistString == typeof(DummyToolbox).ToString())
-                return m_toolbox;
+                return _toolbox;
             else if (persistString == typeof(DummyOutputWindow).ToString())
-                return m_outputWindow;
+                return _outputWindow;
             else if (persistString == typeof(DummyTaskList).ToString())
-                return m_taskList;
+                return _taskList;
             else
             {
                 // DummyDoc overrides GetPersistString to add extra information into persistString.
@@ -124,7 +127,7 @@ namespace DockSample
                 if (parsedStrings[0] != typeof(DummyDoc).ToString())
                     return null;
 
-                DummyDoc dummyDoc = new DummyDoc();
+                DummyDoc dummyDoc = new();
                 if (parsedStrings[1] != string.Empty)
                     dummyDoc.FileName = parsedStrings[1];
                 if (parsedStrings[2] != string.Empty)
@@ -137,11 +140,11 @@ namespace DockSample
         private void CloseAllContents()
         {
             // we don't want to create another instance of tool window, set DockPanel to null
-            m_solutionExplorer.DockPanel = null;
-            m_propertyWindow.DockPanel = null;
-            m_toolbox.DockPanel = null;
-            m_outputWindow.DockPanel = null;
-            m_taskList.DockPanel = null;
+            _solutionExplorer.DockPanel = null;
+            _propertyWindow.DockPanel = null;
+            _toolbox.DockPanel = null;
+            _outputWindow.DockPanel = null;
+            _taskList.DockPanel = null;
 
             // Close all other document windows
             CloseAllDocuments();
@@ -157,7 +160,7 @@ namespace DockSample
 
         private readonly ToolStripRenderer _toolStripProfessionalRenderer = new ToolStripProfessionalRenderer();
         
-        private void SetSchema(object sender, System.EventArgs e)
+        private void SetSchema(object sender, EventArgs e)
         {
             // Persist settings when rebuilding UI
             string configFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "DockPanel.temp.config");
@@ -238,7 +241,7 @@ namespace DockSample
             }
 
             if (File.Exists(configFile))
-                dockPanel.LoadFromXml(configFile, m_deserializeDockContent);
+                dockPanel.LoadFromXml(configFile, _deserializeDockContent);
         }
 
         private void EnableVSRenderer(VisualStudioToolStripExtender.VsVersion version, ThemeBase theme)
@@ -248,7 +251,7 @@ namespace DockSample
             vsToolStripExtender1.SetStyle(statusBar, version, theme);
         }
 
-        private void SetDocumentStyle(object sender, System.EventArgs e)
+        private void SetDocumentStyle(object sender, EventArgs e)
         {
             DocumentStyle oldStyle = dockPanel.DocumentStyle;
             DocumentStyle newStyle;
@@ -282,43 +285,43 @@ namespace DockSample
 
         #region Event Handlers
 
-        private void menuItemExit_Click(object sender, System.EventArgs e)
+        private void MenuItemExit_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void menuItemSolutionExplorer_Click(object sender, System.EventArgs e)
+        private void MenuItemSolutionExplorer_Click(object sender, EventArgs e)
         {
-            m_solutionExplorer.Show(dockPanel);
+            _solutionExplorer.Show(dockPanel);
         }
 
-        private void menuItemPropertyWindow_Click(object sender, System.EventArgs e)
+        private void MenuItemPropertyWindow_Click(object sender, EventArgs e)
         {
-            m_propertyWindow.Show(dockPanel);
+            _propertyWindow.Show(dockPanel);
         }
 
-        private void menuItemToolbox_Click(object sender, System.EventArgs e)
+        private void MenuItemToolbox_Click(object sender, EventArgs e)
         {
-            m_toolbox.Show(dockPanel);
+            _toolbox.Show(dockPanel);
         }
 
-        private void menuItemOutputWindow_Click(object sender, System.EventArgs e)
+        private void MenuItemOutputWindow_Click(object sender, EventArgs e)
         {
-            m_outputWindow.Show(dockPanel);
+            _outputWindow.Show(dockPanel);
         }
 
-        private void menuItemTaskList_Click(object sender, System.EventArgs e)
+        private void MenuItemTaskList_Click(object sender, EventArgs e)
         {
-            m_taskList.Show(dockPanel);
+            _taskList.Show(dockPanel);
         }
 
-        private void menuItemAbout_Click(object sender, System.EventArgs e)
+        private void MenuItemAbout_Click(object sender, EventArgs e)
         {
-            AboutDialog aboutDialog = new AboutDialog();
+            AboutDialog aboutDialog = new();
             aboutDialog.ShowDialog(this);
         }
 
-        private void menuItemNew_Click(object sender, System.EventArgs e)
+        private void MenuItemNew_Click(object sender, EventArgs e)
         {
             DummyDoc dummyDoc = CreateNewDocument();
             if (dockPanel.DocumentStyle == DocumentStyle.SystemMdi)
@@ -330,14 +333,15 @@ namespace DockSample
                 dummyDoc.Show(dockPanel);
         }
 
-        private void menuItemOpen_Click(object sender, System.EventArgs e)
+        private void MenuItemOpen_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFile = new OpenFileDialog();
-
-            openFile.InitialDirectory = Application.ExecutablePath;
-            openFile.Filter = "rtf files (*.rtf)|*.rtf|txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            openFile.FilterIndex = 1;
-            openFile.RestoreDirectory = true;
+            OpenFileDialog openFile = new()
+            {
+                InitialDirectory = Application.ExecutablePath,
+                Filter = "rtf files (*.rtf)|*.rtf|txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
 
             if (openFile.ShowDialog() == DialogResult.OK)
             {
@@ -350,8 +354,11 @@ namespace DockSample
                     return;
                 }
 
-                DummyDoc dummyDoc = new DummyDoc();
-                dummyDoc.Text = fileName;
+                DummyDoc dummyDoc = new()
+                {
+                    Text = fileName
+                };
+
                 if (dockPanel.DocumentStyle == DocumentStyle.SystemMdi)
                 {
                     dummyDoc.MdiParent = this;
@@ -372,7 +379,7 @@ namespace DockSample
             }
         }
 
-        private void menuItemFile_Popup(object sender, System.EventArgs e)
+        private void MenuItemFile_Popup(object sender, EventArgs e)
         {
             if (dockPanel.DocumentStyle == DocumentStyle.SystemMdi)
             {
@@ -388,88 +395,87 @@ namespace DockSample
             }
         }
 
-        private void menuItemClose_Click(object sender, System.EventArgs e)
+        private void MenuItemClose_Click(object sender, EventArgs e)
         {
             if (dockPanel.DocumentStyle == DocumentStyle.SystemMdi)
                 ActiveMdiChild.Close();
-            else if (dockPanel.ActiveDocument != null)
-                dockPanel.ActiveDocument.DockHandler.Close();
+            else dockPanel.ActiveDocument?.DockHandler.Close();
         }
 
-        private void menuItemCloseAll_Click(object sender, System.EventArgs e)
+        private void MenuItemCloseAll_Click(object sender, EventArgs e)
         {
             CloseAllDocuments();
         }
 
-        private void MainForm_Load(object sender, System.EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             SetSchema(this.menuItemSchemaVS2013Blue, null);
 
             string configFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "DockPanel.config");
 
             if (File.Exists(configFile))
-                dockPanel.LoadFromXml(configFile, m_deserializeDockContent);
+                dockPanel.LoadFromXml(configFile, _deserializeDockContent);
         }
 
-        private void MainForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MainForm_Closing(object sender, CancelEventArgs e)
         {
             string configFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "DockPanel.config");
-            if (m_bSaveLayout)
+            if (_saveLayout)
                 dockPanel.SaveAsXml(configFile);
             else if (File.Exists(configFile))
                 File.Delete(configFile);
         }
 
-        private void menuItemToolBar_Click(object sender, System.EventArgs e)
+        private void MenuItemToolBar_Click(object sender, EventArgs e)
         {
             toolBar.Visible = menuItemToolBar.Checked = !menuItemToolBar.Checked;
         }
 
-        private void menuItemStatusBar_Click(object sender, System.EventArgs e)
+        private void MenuItemStatusBar_Click(object sender, EventArgs e)
         {
             statusBar.Visible = menuItemStatusBar.Checked = !menuItemStatusBar.Checked;
         }
 
-        private void toolBar_ButtonClick(object sender, System.Windows.Forms.ToolStripItemClickedEventArgs e)
+        private void ToolBar_ButtonClick(object sender, ToolStripItemClickedEventArgs e)
         {
             if (e.ClickedItem == toolBarButtonNew)
-                menuItemNew_Click(null, null);
+                MenuItemNew_Click(null, null);
             else if (e.ClickedItem == toolBarButtonOpen)
-                menuItemOpen_Click(null, null);
+                MenuItemOpen_Click(null, null);
             else if (e.ClickedItem == toolBarButtonSolutionExplorer)
-                menuItemSolutionExplorer_Click(null, null);
+                MenuItemSolutionExplorer_Click(null, null);
             else if (e.ClickedItem == toolBarButtonPropertyWindow)
-                menuItemPropertyWindow_Click(null, null);
+                MenuItemPropertyWindow_Click(null, null);
             else if (e.ClickedItem == toolBarButtonToolbox)
-                menuItemToolbox_Click(null, null);
+                MenuItemToolbox_Click(null, null);
             else if (e.ClickedItem == toolBarButtonOutputWindow)
-                menuItemOutputWindow_Click(null, null);
+                MenuItemOutputWindow_Click(null, null);
             else if (e.ClickedItem == toolBarButtonTaskList)
-                menuItemTaskList_Click(null, null);
+                MenuItemTaskList_Click(null, null);
             else if (e.ClickedItem == toolBarButtonLayoutByCode)
-                menuItemLayoutByCode_Click(null, null);
+                MenuItemLayoutByCode_Click(null, null);
             else if (e.ClickedItem == toolBarButtonLayoutByXml)
-                menuItemLayoutByXml_Click(null, null);
+                MenuItemLayoutByXml_Click(null, null);
         }
 
-        private void menuItemNewWindow_Click(object sender, System.EventArgs e)
+        private void MenuItemNewWindow_Click(object sender, EventArgs e)
         {
-            MainForm newWindow = new MainForm();
-            newWindow.Text = newWindow.Text + " - New";
+            MainForm newWindow = new();
+            newWindow.Text += " - New";
             newWindow.Show();
         }
 
-        private void menuItemTools_Popup(object sender, System.EventArgs e)
+        private void MenuItemTools_Popup(object sender, EventArgs e)
         {
             menuItemLockLayout.Checked = !this.dockPanel.AllowEndUserDocking;
         }
 
-        private void menuItemLockLayout_Click(object sender, System.EventArgs e)
+        private void MenuItemLockLayout_Click(object sender, EventArgs e)
         {
             dockPanel.AllowEndUserDocking = !dockPanel.AllowEndUserDocking;
         }
 
-        private void menuItemLayoutByCode_Click(object sender, System.EventArgs e)
+        private void MenuItemLayoutByCode_Click(object sender, EventArgs e)
         {
             dockPanel.SuspendLayout(true);
 
@@ -477,11 +483,11 @@ namespace DockSample
 
             CreateStandardControls();
 
-            m_solutionExplorer.Show(dockPanel, DockState.DockRight);
-            m_propertyWindow.Show(m_solutionExplorer.Pane, m_solutionExplorer);
-            m_toolbox.Show(dockPanel, new Rectangle(98, 133, 200, 383));
-            m_outputWindow.Show(m_solutionExplorer.Pane, DockAlignment.Bottom, 0.35);
-            m_taskList.Show(m_toolbox.Pane, DockAlignment.Left, 0.4);
+            _solutionExplorer.Show(dockPanel, DockState.DockRight);
+            _propertyWindow.Show(_solutionExplorer.Pane, _solutionExplorer);
+            _toolbox.Show(dockPanel, new Rectangle(98, 133, 200, 383));
+            _outputWindow.Show(_solutionExplorer.Pane, DockAlignment.Bottom, 0.35);
+            _taskList.Show(_toolbox.Pane, DockAlignment.Left, 0.4);
 
             DummyDoc doc1 = CreateNewDocument("Document1");
             DummyDoc doc2 = CreateNewDocument("Document2");
@@ -505,7 +511,7 @@ namespace DockSample
             _splashScreen.Visible = true;
             _splashScreen.TopMost = true;
 
-            Timer _timer = new Timer();
+            Timer _timer = new();
             _timer.Tick += (sender, e) =>
             {
                 _splashScreen.Visible = false;
@@ -532,14 +538,14 @@ namespace DockSample
 
         private void CreateStandardControls()
         {
-            m_solutionExplorer = new DummySolutionExplorer();
-            m_propertyWindow = new DummyPropertyWindow();
-            m_toolbox = new DummyToolbox();
-            m_outputWindow = new DummyOutputWindow();
-            m_taskList = new DummyTaskList();
+            _solutionExplorer = new DummySolutionExplorer();
+            _propertyWindow = new DummyPropertyWindow();
+            _toolbox = new DummyToolbox();
+            _outputWindow = new DummyOutputWindow();
+            _taskList = new DummyTaskList();
         }
 
-        private void menuItemLayoutByXml_Click(object sender, System.EventArgs e)
+        private void MenuItemLayoutByXml_Click(object sender, EventArgs e)
         {
             dockPanel.SuspendLayout(true);
 
@@ -550,13 +556,13 @@ namespace DockSample
 
             Assembly assembly = Assembly.GetAssembly(typeof(MainForm));
             Stream xmlStream = assembly.GetManifestResourceStream("DockSample.Resources.DockPanel.xml");
-            dockPanel.LoadFromXml(xmlStream, m_deserializeDockContent);
+            dockPanel.LoadFromXml(xmlStream, _deserializeDockContent);
             xmlStream.Close();
 
             dockPanel.ResumeLayout(true, true);
         }
 
-        private void menuItemCloseAllButThisOne_Click(object sender, System.EventArgs e)
+        private void MenuItemCloseAllButThisOne_Click(object sender, EventArgs e)
         {
             if (dockPanel.DocumentStyle == DocumentStyle.SystemMdi)
             {
@@ -569,20 +575,20 @@ namespace DockSample
             }
             else
             {
-                foreach (IDockContent document in dockPanel.DocumentsToArray())
+                foreach (var handler in dockPanel.Documents.Select(document => document.DockHandler))
                 {
-                    if (!document.DockHandler.IsActivated)
-                        document.DockHandler.Close();
+                    if (!handler.IsActivated)
+                        handler.Close();
                 }
             }
         }
 
-        private void menuItemShowDocumentIcon_Click(object sender, System.EventArgs e)
+        private void MenuItemShowDocumentIcon_Click(object sender, EventArgs e)
         {
             dockPanel.ShowDocumentIcon = menuItemShowDocumentIcon.Checked = !menuItemShowDocumentIcon.Checked;
         }
 
-        private void showRightToLeft_Click(object sender, EventArgs e)
+        private void ShowRightToLeft_Click(object sender, EventArgs e)
         {
             CloseAllContents();
             if (showRightToLeft.Checked)
@@ -595,15 +601,15 @@ namespace DockSample
                 this.RightToLeft = RightToLeft.Yes;
                 this.RightToLeftLayout = true;
             }
-            m_solutionExplorer.RightToLeftLayout = this.RightToLeftLayout;
+            _solutionExplorer.RightToLeftLayout = this.RightToLeftLayout;
             showRightToLeft.Checked = !showRightToLeft.Checked;
         }
 
-        private void exitWithoutSavingLayout_Click(object sender, EventArgs e)
+        private void ExitWithoutSavingLayout_Click(object sender, EventArgs e)
         {
-            m_bSaveLayout = false;
+            _saveLayout = false;
             Close();
-            m_bSaveLayout = true;
+            _saveLayout = true;
         }
 
         #endregion

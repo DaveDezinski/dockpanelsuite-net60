@@ -9,26 +9,15 @@ namespace WeifenLuo.WinFormsUI.Docking
     [ToolboxItem(false)]
     internal class VS2005MultithreadingAutoHideStrip : AutoHideStripBase
     {
-        private class TabVS2005 : Tab
+        private sealed class TabVS2005 : Tab
         {
             internal TabVS2005(IDockContent content)
                 : base(content)
             {
             }
 
-            private int m_tabX = 0;
-            public int TabX
-            {
-                get { return m_tabX; }
-                set { m_tabX = value; }
-            }
-
-            private int m_tabWidth = 0;
-            public int TabWidth
-            {
-                get { return m_tabWidth; }
-                set { m_tabWidth = value; }
-            }
+            public int TabX { get; set; } = 0;
+            public int TabWidth { get; set; } = 0;
 
         }
 
@@ -50,19 +39,18 @@ namespace WeifenLuo.WinFormsUI.Docking
             get { return DockPanel.Theme.Skin.AutoHideStripSkin.TextFont; }
         }
 
-        private static StringFormat _stringFormatTabHorizontal;
+        private StringFormat _stringFormatTabHorizontal;
         private StringFormat StringFormatTabHorizontal
         {
             get
             {
-                if (_stringFormatTabHorizontal == null)
-                {
-                    _stringFormatTabHorizontal = new StringFormat();
-                    _stringFormatTabHorizontal.Alignment = StringAlignment.Near;
-                    _stringFormatTabHorizontal.LineAlignment = StringAlignment.Center;
-                    _stringFormatTabHorizontal.FormatFlags = StringFormatFlags.NoWrap;
-                    _stringFormatTabHorizontal.Trimming = StringTrimming.None;
-                }
+                _stringFormatTabHorizontal ??= new StringFormat
+                    {
+                        Alignment = StringAlignment.Near,
+                        LineAlignment = StringAlignment.Center,
+                        FormatFlags = StringFormatFlags.NoWrap,
+                        Trimming = StringTrimming.None
+                    };
 
                 if (RightToLeft == RightToLeft.Yes)
                     _stringFormatTabHorizontal.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
@@ -73,19 +61,18 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        private static StringFormat _stringFormatTabVertical;
+        private StringFormat _stringFormatTabVertical;
         private StringFormat StringFormatTabVertical
         {
             get
             {
-                if (_stringFormatTabVertical == null)
-                {
-                    _stringFormatTabVertical = new StringFormat();
-                    _stringFormatTabVertical.Alignment = StringAlignment.Near;
-                    _stringFormatTabVertical.LineAlignment = StringAlignment.Center;
-                    _stringFormatTabVertical.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.DirectionVertical;
-                    _stringFormatTabVertical.Trimming = StringTrimming.None;
-                }
+                _stringFormatTabVertical ??= new StringFormat
+                    {
+                        Alignment = StringAlignment.Near,
+                        LineAlignment = StringAlignment.Center,
+                        FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.DirectionVertical,
+                        Trimming = StringTrimming.None
+                    };
                 if (RightToLeft == RightToLeft.Yes)
                     _stringFormatTabVertical.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
                 else
@@ -156,7 +143,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         }
         #endregion
 
-        private static Matrix _matrixIdentity = new Matrix();
+        private static readonly Matrix _matrixIdentity = new();
         private static Matrix MatrixIdentity
         {
             get { return _matrixIdentity; }
@@ -233,7 +220,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             Matrix matrixIdentity = g.Transform;
             if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
             {
-                Matrix matrixRotated = new Matrix();
+                Matrix matrixRotated = new();
                 matrixRotated.RotateAt(90, new PointF((float)rectTabStrip.X + (float)rectTabStrip.Height / 2,
                     (float)rectTabStrip.Y + (float)rectTabStrip.Height / 2));
                 g.Transform = matrixRotated;
@@ -241,8 +228,10 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             foreach (Pane pane in GetPanes(dockState))
             {
-                foreach (TabVS2005 tab in pane.AutoHideTabs)
-                    DrawTab(g, tab);
+                foreach (Tab tab in pane.AutoHideTabs)
+                {
+                    DrawTab(g, (TabVS2005)tab);
+                }
             }
             g.Transform = matrixIdentity;
         }
@@ -267,8 +256,9 @@ namespace WeifenLuo.WinFormsUI.Docking
             int x = TabGapLeft + rectTabStrip.X;
             foreach (Pane pane in GetPanes(dockState))
             {
-                foreach (TabVS2005 tab in pane.AutoHideTabs)
+                foreach (Tab tabObject in pane.AutoHideTabs)
                 {
+                    var tab = tabObject as TabVS2005;
                     int width = imageWidth + ImageGapLeft + ImageGapRight +
                         TextRenderer.MeasureText(tab.Content.DockHandler.TabText, TextFont).Width +
                         TextGapLeft + TextGapRight;
@@ -317,7 +307,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             Color startColor = DockPanel.Theme.Skin.AutoHideStripSkin.TabGradient.StartColor;
             Color endColor = DockPanel.Theme.Skin.AutoHideStripSkin.TabGradient.EndColor;
             LinearGradientMode gradientMode = DockPanel.Theme.Skin.AutoHideStripSkin.TabGradient.LinearGradientMode;
-            using (LinearGradientBrush brush = new LinearGradientBrush(rectTabOrigin, startColor, endColor, gradientMode))
+            using (LinearGradientBrush brush = new(rectTabOrigin, startColor, endColor, gradientMode))
             {
                 g.FillPath(brush, path);
             }
@@ -325,60 +315,56 @@ namespace WeifenLuo.WinFormsUI.Docking
             g.DrawPath(PenTabBorder, path);
 
             // Set no rotate for drawing icon and text
-            using (Matrix matrixRotate = g.Transform)
+            using Matrix matrixRotate = g.Transform;
+            g.Transform = MatrixIdentity;
+
+            // Draw the icon
+            Rectangle rectImage = rectTabOrigin;
+            rectImage.X += ImageGapLeft;
+            rectImage.Y += ImageGapTop;
+            int imageHeight = rectTabOrigin.Height - ImageGapTop - ImageGapBottom;
+            int imageWidth = ImageWidth;
+            if (imageHeight > ImageHeight)
+                imageWidth = ImageWidth * (imageHeight / ImageHeight);
+            rectImage.Height = imageHeight;
+            rectImage.Width = imageWidth;
+            rectImage = GetTransformedRectangle(dockState, rectImage);
+
+            if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
             {
-                g.Transform = MatrixIdentity;
-
-                // Draw the icon
-                Rectangle rectImage = rectTabOrigin;
-                rectImage.X += ImageGapLeft;
-                rectImage.Y += ImageGapTop;
-                int imageHeight = rectTabOrigin.Height - ImageGapTop - ImageGapBottom;
-                int imageWidth = ImageWidth;
-                if (imageHeight > ImageHeight)
-                    imageWidth = ImageWidth * (imageHeight / ImageHeight);
-                rectImage.Height = imageHeight;
-                rectImage.Width = imageWidth;
-                rectImage = GetTransformedRectangle(dockState, rectImage);
-
-                if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
-                {
-                    // The DockState is DockLeftAutoHide or DockRightAutoHide, so rotate the image 90 degrees to the right. 
-                    Rectangle rectTransform = RtlTransform(rectImage, dockState);
-                    Point[] rotationPoints =
-                        { 
-                            new Point(rectTransform.X + rectTransform.Width, rectTransform.Y), 
-                            new Point(rectTransform.X + rectTransform.Width, rectTransform.Y + rectTransform.Height), 
+                // The DockState is DockLeftAutoHide or DockRightAutoHide, so rotate the image 90 degrees to the right. 
+                Rectangle rectTransform = RtlTransform(rectImage, dockState);
+                Point[] rotationPoints =
+                    {
+                            new Point(rectTransform.X + rectTransform.Width, rectTransform.Y),
+                            new Point(rectTransform.X + rectTransform.Width, rectTransform.Y + rectTransform.Height),
                             new Point(rectTransform.X, rectTransform.Y)
                         };
 
-                    using (Icon rotatedIcon = new Icon(((Form)content).Icon, 16, 16))
-                    {
-                        g.DrawImage(rotatedIcon.ToBitmap(), rotationPoints);
-                    }
-                }
-                else
-                {
-                    // Draw the icon normally without any rotation.
-                    g.DrawIcon(((Form)content).Icon, RtlTransform(rectImage, dockState));
-                }
-
-                // Draw the text
-                Rectangle rectText = rectTabOrigin;
-                rectText.X += ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
-                rectText.Width -= ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
-                rectText = RtlTransform(GetTransformedRectangle(dockState, rectText), dockState);
-
-                Color textColor = DockPanel.Theme.Skin.AutoHideStripSkin.TabGradient.TextColor;
-
-                if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
-                    g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText, StringFormatTabVertical);
-                else
-                    g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText, StringFormatTabHorizontal);
-
-                // Set rotate back
-                g.Transform = matrixRotate;
+                using Icon rotatedIcon = new(((Form)content).Icon, 16, 16);
+                g.DrawImage(rotatedIcon.ToBitmap(), rotationPoints);
             }
+            else
+            {
+                // Draw the icon normally without any rotation.
+                g.DrawIcon(((Form)content).Icon, RtlTransform(rectImage, dockState));
+            }
+
+            // Draw the text
+            Rectangle rectText = rectTabOrigin;
+            rectText.X += ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
+            rectText.Width -= ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
+            rectText = RtlTransform(GetTransformedRectangle(dockState, rectText), dockState);
+
+            Color textColor = DockPanel.Theme.Skin.AutoHideStripSkin.TabGradient.TextColor;
+
+            if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
+                g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText, StringFormatTabVertical);
+            else
+                g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText, StringFormatTabHorizontal);
+
+            // Set rotate back
+            g.Transform = matrixRotate;
         }
 
         private Rectangle GetLogicalTabStripRectangle(DockState dockState)
@@ -497,8 +483,9 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 foreach (Pane pane in GetPanes(state))
                 {
-                    foreach (TabVS2005 tab in pane.AutoHideTabs)
+                    foreach (Tab tabObject in pane.AutoHideTabs)
                     {
+                        var tab = tabObject as TabVS2005;
                         GraphicsPath path = GetTabOutline(tab, true, true);
                         if (path.IsVisible(point))
                             return tab.Content;

@@ -13,9 +13,9 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
         }
 
         [ToolboxItem(false)]
-        private class VS2005WindowSplitterControl : SplitterBase
+        private sealed class VS2005WindowSplitterControl : SplitterBase
         {
-            private ISplitterHost _host;
+            private readonly ISplitterHost _host;
 
             public VS2005WindowSplitterControl(ISplitterHost host)
             {

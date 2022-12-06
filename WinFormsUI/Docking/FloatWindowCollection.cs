@@ -19,7 +19,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             return Count - 1;
         }
 
-        internal void Dispose()
+        internal void Clear()
         {
             for (int i=Count - 1; i>=0; i--)
                 this[i].Close();

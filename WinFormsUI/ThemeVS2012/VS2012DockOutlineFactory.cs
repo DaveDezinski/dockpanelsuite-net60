@@ -12,11 +12,11 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
             return new VS2012LightDockOutline();
         }
 
-        private class VS2012LightDockOutline : DockOutlineBase
+        private sealed class VS2012LightDockOutline : DockOutlineBase
         {
             public VS2012LightDockOutline()
             {
-                m_dragForm = new DragForm();
+                _dragForm = new DragForm();
                 SetDragForm(Rectangle.Empty);
                 // IMPORTANT: this color does not come from palette.
                 DragForm.BackColor = ColorTranslator.FromHtml("#FFC2C2C2");
@@ -25,10 +25,10 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
                 DragForm.Show(false);
             }
 
-            DragForm m_dragForm;
+            private readonly DragForm _dragForm;
             private DragForm DragForm
             {
-                get { return m_dragForm; }
+                get { return _dragForm; }
             }
 
             protected override void OnShow()
@@ -124,18 +124,16 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
                 }
                 else
                 {
-                    using (GraphicsPath path = pane.TabStripControl.GetOutline(contentIndex))
+                    using GraphicsPath path = pane.TabStripControl.GetOutline(contentIndex);
+                    RectangleF rectF = path.GetBounds();
+                    Rectangle rect = new((int)rectF.X, (int)rectF.Y, (int)rectF.Width, (int)rectF.Height);
+                    using (Matrix matrix = new(rect, new Point[] { new Point(0, 0), new Point(rect.Width, 0), new Point(0, rect.Height) }))
                     {
-                        RectangleF rectF = path.GetBounds();
-                        Rectangle rect = new Rectangle((int)rectF.X, (int)rectF.Y, (int)rectF.Width, (int)rectF.Height);
-                        using (Matrix matrix = new Matrix(rect, new Point[] { new Point(0, 0), new Point(rect.Width, 0), new Point(0, rect.Height) }))
-                        {
-                            path.Transform(matrix);
-                        }
-
-                        Region region = new Region(path);
-                        SetDragForm(rect, region);
+                        path.Transform(matrix);
                     }
+
+                    Region region = new(path);
+                    SetDragForm(rect, region);
                 }
             }
 
@@ -144,11 +142,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
                 DragForm.Bounds = rect;
                 if (rect == Rectangle.Empty)
                 {
-                    if (DragForm.Region != null)
-                    {
-                        DragForm.Region.Dispose();
-                    }
-
+                    DragForm.Region?.Dispose();
                     DragForm.Region = new Region(Rectangle.Empty);
                 }
                 else if (DragForm.Region != null)
@@ -161,11 +155,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
             private void SetDragForm(Rectangle rect, Region region)
             {
                 DragForm.Bounds = rect;
-                if (DragForm.Region != null)
-                {
-                    DragForm.Region.Dispose();
-                }
-
+                DragForm.Region?.Dispose();
                 DragForm.Region = region;
             }
         }

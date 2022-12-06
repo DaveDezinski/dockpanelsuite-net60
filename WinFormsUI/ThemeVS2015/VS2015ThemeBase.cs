@@ -9,7 +9,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2015
     /// </summary>
     public abstract class VS2015ThemeBase : ThemeBase
     {
-        public VS2015ThemeBase(byte[] resources)
+        protected VS2015ThemeBase(byte[] resources)
         {
             ColorPalette = new DockPanelColorPalette(new VS2012PaletteFactory(resources));
             Skin = new DockPanelSkin();

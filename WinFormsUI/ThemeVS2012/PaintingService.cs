@@ -6,8 +6,8 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
 {
     public class PaintingService : IPaintingService
     {
-        IDictionary<KeyValuePair<int, int>, Pen> _penCache = new Dictionary<KeyValuePair<int, int>, Pen>();
-        IDictionary<int, SolidBrush> _brushCache = new Dictionary<int, SolidBrush>();
+        private readonly IDictionary<KeyValuePair<int, int>, Pen> _penCache = new Dictionary<KeyValuePair<int, int>, Pen>();
+        private readonly IDictionary<int, SolidBrush> _brushCache = new Dictionary<int, SolidBrush>();
 
         public SolidBrush GetBrush(Color color)
         {

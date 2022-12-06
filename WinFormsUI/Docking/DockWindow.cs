@@ -10,16 +10,16 @@ namespace WeifenLuo.WinFormsUI.Docking
     [ToolboxItem(false)]
     public partial class DockWindow : Panel, INestedPanesContainer, ISplitterHost
     {
-        private DockPanel m_dockPanel;
-        private DockState m_dockState;
-        private SplitterBase m_splitter;
-        private NestedPaneCollection m_nestedPanes;
+        private readonly DockPanel _dockPanel;
+        private readonly DockState _dockState;
+        private readonly SplitterBase _splitter;
+        private readonly NestedPaneCollection _nestedPanes;
 
         protected internal DockWindow(DockPanel dockPanel, DockState dockState)
         {
-            m_nestedPanes = new NestedPaneCollection(this);
-            m_dockPanel = dockPanel;
-            m_dockState = dockState;
+            _nestedPanes = new NestedPaneCollection(this);
+            _dockPanel = dockPanel;
+            _dockState = dockState;
             Visible = false;
 
             SuspendLayout();
@@ -27,29 +27,29 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (DockState == DockState.DockLeft || DockState == DockState.DockRight ||
                 DockState == DockState.DockTop || DockState == DockState.DockBottom)
             {
-                m_splitter = DockPanel.Theme.Extender.WindowSplitterControlFactory.CreateSplitterControl(this);
-                Controls.Add(m_splitter);
+                _splitter = DockPanel.Theme.Extender.WindowSplitterControlFactory.CreateSplitterControl(this);
+                Controls.Add(_splitter);
             }
 
             if (DockState == DockState.DockLeft)
             {
                 Dock = DockStyle.Left;
-                m_splitter.Dock = DockStyle.Right;
+                _splitter.Dock = DockStyle.Right;
             }
             else if (DockState == DockState.DockRight)
             {
                 Dock = DockStyle.Right;
-                m_splitter.Dock = DockStyle.Left;
+                _splitter.Dock = DockStyle.Left;
             }
             else if (DockState == DockState.DockTop)
             {
                 Dock = DockStyle.Top;
-                m_splitter.Dock = DockStyle.Bottom;
+                _splitter.Dock = DockStyle.Bottom;
             }
             else if (DockState == DockState.DockBottom)
             {
                 Dock = DockStyle.Bottom;
-                m_splitter.Dock = DockStyle.Top;
+                _splitter.Dock = DockStyle.Top;
             }
             else if (DockState == DockState.Document)
             {
@@ -71,17 +71,17 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public NestedPaneCollection NestedPanes
         {
-            get	{	return m_nestedPanes;	}
+            get	{	return _nestedPanes;	}
         }
 
         public DockPanel DockPanel
         {
-            get	{	return m_dockPanel;	}
+            get	{	return _dockPanel;	}
         }
 
         public DockState DockState
         {
-            get	{	return m_dockState;	}
+            get	{	return _dockState;	}
         }
 
         public bool IsFloat
@@ -148,10 +148,12 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         void ISplitterDragSource.BeginDrag(Rectangle rectSplitter)
         {
+            // No Implementation
         }
 
         void ISplitterDragSource.EndDrag()
         {
+            // No Implementation
         }
 
         bool ISplitterDragSource.IsVertical

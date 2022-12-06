@@ -23,11 +23,11 @@ namespace WeifenLuo.WinFormsUI.Docking
                 get;
             }
 
-            private Point m_startMousePosition = Point.Empty;
+            private Point _startMousePosition = Point.Empty;
             protected Point StartMousePosition
             {
-                get { return m_startMousePosition; }
-                private set { m_startMousePosition = value; }
+                get { return _startMousePosition; }
+                private set { _startMousePosition = value; }
             }
 
             protected bool BeginDrag()
@@ -37,12 +37,9 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 StartMousePosition = Control.MousePosition;
 
-                if (!Win32Helper.IsRunningOnMono)
+                if (!Win32Helper.IsRunningOnMono && !NativeMethods.DragDetect(DragControl.Handle, StartMousePosition))
                 {
-                    if (!NativeMethods.DragDetect(DragControl.Handle, StartMousePosition))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
 
                 DragControl.FindForm().Capture = true;
@@ -126,28 +123,23 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public abstract class DragHandler : DragHandlerBase
         {
-            private DockPanel m_dockPanel;
+            private readonly DockPanel _dockPanel;
 
             protected DragHandler(DockPanel dockPanel)
             {
-                m_dockPanel = dockPanel;
+                _dockPanel = dockPanel;
             }
 
             public DockPanel DockPanel
             {
-                get { return m_dockPanel; }
+                get { return _dockPanel; }
             }
 
-            private IDragSource m_dragSource;
-            protected IDragSource DragSource
-            {
-                get { return m_dragSource; }
-                set { m_dragSource = value; }
-            }
+            protected IDragSource DragSource { get; set; }
 
             protected sealed override Control DragControl
             {
-                get { return DragSource == null ? null : DragSource.DragControl; }
+                get { return DragSource?.DragControl; }
             }
 
             protected sealed override bool OnPreFilterMessage(ref Message m)

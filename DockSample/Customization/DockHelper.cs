@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace DockSample.Customization
@@ -28,22 +25,22 @@ namespace DockSample.Customization
 
 		public static bool IsDockBottom(DockState dockState)
 		{
-			return (dockState == DockState.DockBottom || dockState == DockState.DockBottomAutoHide) ? true : false;
+			return (dockState == DockState.DockBottom || dockState == DockState.DockBottomAutoHide);
 		}
 
 		public static bool IsDockLeft(DockState dockState)
 		{
-			return (dockState == DockState.DockLeft || dockState == DockState.DockLeftAutoHide) ? true : false;
+			return (dockState == DockState.DockLeft || dockState == DockState.DockLeftAutoHide);
 		}
 
 		public static bool IsDockRight(DockState dockState)
 		{
-			return (dockState == DockState.DockRight || dockState == DockState.DockRightAutoHide) ? true : false;
+			return (dockState == DockState.DockRight || dockState == DockState.DockRightAutoHide);
 		}
 
 		public static bool IsDockTop(DockState dockState)
 		{
-			return (dockState == DockState.DockTop || dockState == DockState.DockTopAutoHide ) ? true : false;
+			return (dockState == DockState.DockTop || dockState == DockState.DockTopAutoHide);
 		}
 
 		public static bool IsDockStateValid(DockState dockState, DockAreas dockableAreas)

@@ -8,7 +8,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 {
     public class VisualStudioToolStripRenderer : ToolStripProfessionalRenderer
     {
-        private static Rectangle[] baseSizeGripRectangles =
+        private static readonly Rectangle[] baseSizeGripRectangles =
         {
             new Rectangle(6,0,1,1),
             new Rectangle(6,2,1,1),
@@ -23,14 +23,13 @@ namespace WeifenLuo.WinFormsUI.Docking
         };
 
         private const int GRIP_PADDING = 4;
-        private SolidBrush _statusBarBrush;
-        private SolidBrush _statusGripBrush;
-        private SolidBrush _statusGripAccentBrush;
-        private SolidBrush _toolBarBrush;
-        private SolidBrush _gripBrush;
-        private Pen _toolBarBorderPen;
-        private VisualStudioColorTable _table;
-        private DockPanelColorPalette _palette;
+        private readonly SolidBrush _statusGripBrush;
+        private readonly SolidBrush _statusGripAccentBrush;
+        private readonly SolidBrush _toolBarBrush;
+        private readonly SolidBrush _gripBrush;
+        private readonly Pen _toolBarBorderPen;
+        private readonly VisualStudioColorTable _table;
+        private readonly DockPanelColorPalette _palette;
 
         public bool UseGlassOnMenuStrip { get; set; }
 
@@ -40,7 +39,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             _table = (VisualStudioColorTable)ColorTable;
             _palette = palette;
             RoundedEdges = false;
-            _statusBarBrush = new SolidBrush(palette.MainWindowStatusBarDefault.Background);
             _statusGripBrush = new SolidBrush(palette.MainWindowStatusBarDefault.ResizeGrip);
             _statusGripAccentBrush = new SolidBrush(palette.MainWindowStatusBarDefault.ResizeGripAccent);
             _toolBarBrush = new SolidBrush(palette.CommandBarToolbarDefault.Background);
@@ -99,22 +97,19 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
         {
-            var status = e.ToolStrip as StatusStrip;
-            if (status != null)
+            if (e.ToolStrip is StatusStrip _)
             {
                 // IMPORTANT: left empty to remove white border.
                 return;
             }
 
-            var context = e.ToolStrip as MenuStrip;
-            if (context != null)
+            if (e.ToolStrip is MenuStrip _)
             {
                 base.OnRenderToolStripBorder(e);
                 return;
             }
 
-            var drop = e.ToolStrip as ToolStripDropDown;
-            if (drop != null)
+            if (e.ToolStrip is ToolStripDropDown _)
             {
                 base.OnRenderToolStripBorder(e);
                 return;
@@ -126,22 +121,19 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
         {
-            var status = e.ToolStrip as StatusStrip;
-            if (status != null)
+            if (e.ToolStrip is StatusStrip _)
             {
                 base.OnRenderToolStripBackground(e);
                 return;
             }
 
-            var context = e.ToolStrip as MenuStrip;
-            if (context != null)
+            if (e.ToolStrip is MenuStrip _)
             {
                 base.OnRenderToolStripBackground(e);
                 return;
             }
 
-            var drop = e.ToolStrip as ToolStripDropDown;
-            if (drop != null)
+            if (e.ToolStrip is ToolStripDropDown _)
             {
                 base.OnRenderToolStripBackground(e);
                 return;
@@ -154,13 +146,12 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             // IMPORTANT: below code was taken from Microsoft's reference code (MIT license).
             Graphics g = e.Graphics;
-            StatusStrip statusStrip = e.ToolStrip as StatusStrip;
 
             // we have a set of stock rectangles.  Translate them over to where the grip is to be drawn
             // for the white set, then translate them up and right one pixel for the grey.
 
 
-            if (statusStrip != null)
+            if (e.ToolStrip is StatusStrip statusStrip)
             {
                 Rectangle sizeGripBounds = statusStrip.SizeGripBounds;
                 if (!LayoutUtils.IsZeroWidthOrHeight(sizeGripBounds))
@@ -262,13 +253,12 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
         {
-            ToolStripButton button = e.Item as ToolStripButton;
-            if (button != null && button.Enabled)
+            if (e.Item is ToolStripButton button && button.Enabled)
             {
                 if (button.Selected || button.Checked)
                 {
                     // Rect of item's content area.
-                    Rectangle contentRect = new Rectangle(0, 0, button.Width - 1, button.Height - 1);
+                    Rectangle contentRect = new(0, 0, button.Width - 1, button.Height - 1);
 
                     Color pen;
                     Color brushBegin;
@@ -346,31 +336,28 @@ namespace WeifenLuo.WinFormsUI.Docking
         protected override void OnRenderItemCheck(ToolStripItemImageRenderEventArgs e)
         {
             ////base.OnRenderItemCheck(e);
-            using (var imageAttr = new ImageAttributes())
+            using var imageAttr = new ImageAttributes();
+            Color foreColor = e.Item.Selected ? _palette.CommandBarMenuPopupHovered.Checkmark : _palette.CommandBarMenuPopupDefault.Checkmark;
+            Color backColor = e.Item.Selected ? _palette.CommandBarMenuPopupHovered.CheckmarkBackground : _palette.CommandBarMenuPopupDefault.CheckmarkBackground;
+            Color borderColor = _palette.CommandBarMenuPopupDefault.Border;
+
+            // Create a color map.
+            ColorMap[] colorMap = new ColorMap[1];
+            colorMap[0] = new ColorMap
             {
-                Color foreColor = e.Item.Selected ? _palette.CommandBarMenuPopupHovered.Checkmark : _palette.CommandBarMenuPopupDefault.Checkmark;
-                Color backColor = e.Item.Selected ? _palette.CommandBarMenuPopupHovered.CheckmarkBackground : _palette.CommandBarMenuPopupDefault.CheckmarkBackground;
-                Color borderColor = _palette.CommandBarMenuPopupDefault.Border;
-
-                // Create a color map.
-                ColorMap[] colorMap = new ColorMap[1];
-                colorMap[0] = new ColorMap();
-
                 // old color determined from testing
-                colorMap[0].OldColor = Color.FromArgb(4, 2, 4);
-                colorMap[0].NewColor = foreColor;
-                imageAttr.SetRemapTable(colorMap);
+                OldColor = Color.FromArgb(4, 2, 4),
+                NewColor = foreColor
+            };
+            imageAttr.SetRemapTable(colorMap);
 
-                using (var b = new SolidBrush(backColor))
-                {
-                    e.Graphics.FillRectangle(b, e.ImageRectangle);
-                }
-                e.Graphics.DrawImage(e.Image, e.ImageRectangle, 0, 0, e.Image.Width, e.Image.Height, GraphicsUnit.Pixel, imageAttr);
-                using (var p = new Pen(borderColor))
-                {
-                    e.Graphics.DrawRectangle(p, e.ImageRectangle);
-                }
+            using (var b = new SolidBrush(backColor))
+            {
+                e.Graphics.FillRectangle(b, e.ImageRectangle);
             }
+            e.Graphics.DrawImage(e.Image, e.ImageRectangle, 0, 0, e.Image.Width, e.Image.Height, GraphicsUnit.Pixel, imageAttr);
+            using var p = new Pen(borderColor);
+            e.Graphics.DrawRectangle(p, e.ImageRectangle);
         }
 
         protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
@@ -392,8 +379,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 // if this is a menu, then account for the image column
                 int x1 = r.X;
                 int x2 = r.X + r.Width;
-                var menu = e.ToolStrip as ToolStripDropDownMenu;
-                if (menu != null)
+                if (e.ToolStrip is ToolStripDropDownMenu menu)
                 {
                     x1 += menu.Padding.Left;
                     x2 -= menu.Padding.Right;
@@ -412,7 +398,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
-            Color color = Color.Black;
+            Color color;
             var toolStrip = e.ToolStrip;
             if (toolStrip is StatusStrip)
             {
@@ -425,38 +411,8 @@ namespace WeifenLuo.WinFormsUI.Docking
                     color = _palette.MainWindowStatusBarDefault.Text;
                 }
             }
-            else if (toolStrip is MenuStrip)
+            else if (toolStrip is MenuStrip || toolStrip is ToolStripDropDown)
             {
-                var button = e.Item as ToolStripButton;
-                var checkedButton = button != null && button.Checked;
-                if (!e.Item.Enabled)
-                {
-                    color = _palette.CommandBarMenuPopupDisabled.Text;
-                }
-                else if (button != null && button.Pressed)
-                {
-                    color = _palette.CommandBarToolbarButtonPressed.Text;
-                }
-                else if (e.Item.Selected && checkedButton)
-                {
-                    color = _palette.CommandBarToolbarButtonCheckedHovered.Text;
-                }
-                else if (e.Item.Selected)
-                {
-                    color = _palette.CommandBarMenuTopLevelHeaderHovered.Text;
-                }
-                else if (checkedButton)
-                {
-                    color = _palette.CommandBarToolbarButtonChecked.Text;
-                }
-                else
-                {
-                    color = _palette.CommandBarMenuDefault.Text;
-                }
-            }
-            else if (toolStrip is ToolStripDropDown)
-            {
-                // This might differ from above branch, but left the same here.
                 var button = e.Item as ToolStripButton;
                 var checkedButton = button != null && button.Checked;
                 if (!e.Item.Enabled)
@@ -504,13 +460,9 @@ namespace WeifenLuo.WinFormsUI.Docking
         private static void DrawRectangle(Graphics graphics, Rectangle rect, Color brushBegin, 
             Color brushMiddle, Color brushEnd, Color penColor, bool glass)
         {
-            RectangleF firstHalf = new RectangleF(
-                rect.X, rect.Y, 
-                rect.Width, (float)rect.Height / 2);
+            RectangleF firstHalf = new(rect.X, rect.Y, rect.Width, (float)rect.Height / 2);
 
-            RectangleF secondHalf = new RectangleF(
-                rect.X, rect.Y + (float)rect.Height / 2, 
-                rect.Width, (float)rect.Height / 2);
+            RectangleF secondHalf = new(rect.X, rect.Y + (float)rect.Height / 2, rect.Width, (float)rect.Height / 2);
 
             if (brushMiddle.IsEmpty && brushEnd.IsEmpty)
             {
@@ -544,138 +496,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             DrawRectangle(graphics, rect, brushBegin, Color.Empty, brushEnd, penColor, glass);
         }
 
-        private static void DrawRectangle(Graphics graphics, Rectangle rect, Color brush, 
-            Color penColor, bool glass)
-        {
-            DrawRectangle(graphics, rect, brush, Color.Empty, Color.Empty, penColor, glass);
-        }
-
-        private static void FillRoundRectangle(Graphics graphics, Brush brush, Rectangle rect, int radius)
-        {
-            float fx = Convert.ToSingle(rect.X);
-            float fy = Convert.ToSingle(rect.Y);
-            float fwidth = Convert.ToSingle(rect.Width);
-            float fheight = Convert.ToSingle(rect.Height);
-            float fradius = Convert.ToSingle(radius);
-            FillRoundRectangle(graphics, brush, fx, fy, fwidth, fheight, fradius);
-        }
-
-        private static void FillRoundRectangle(Graphics graphics, Brush brush, float x, float y, float width, float height, float radius)
-        {
-            RectangleF rectangle = new RectangleF(x, y, width, height);
-            GraphicsPath path = GetRoundedRect(rectangle, radius);
-            graphics.FillPath(brush, path);
-        }
-
-        private static void DrawRoundRectangle(Graphics graphics, Pen pen, Rectangle rect, int radius)
-        {
-            float fx = Convert.ToSingle(rect.X);
-            float fy = Convert.ToSingle(rect.Y);
-            float fwidth = Convert.ToSingle(rect.Width);
-            float fheight = Convert.ToSingle(rect.Height);
-            float fradius = Convert.ToSingle(radius);
-            DrawRoundRectangle(graphics, pen, fx, fy, fwidth, fheight, fradius);
-        }
-
-        private static void DrawRoundRectangle(Graphics graphics, Pen pen, float x, float y, float width, float height, float radius)
-        {
-            RectangleF rectangle = new RectangleF(x, y, width, height);
-            GraphicsPath path = GetRoundedRect(rectangle, radius);
-            graphics.DrawPath(pen, path);
-        }
-
-        private static GraphicsPath GetRoundedRect(RectangleF baseRect, float radius)
-        {
-            // if corner radius is less than or equal to zero, 
-            // return the original rectangle 
-
-            if (radius <= 0)
-            {
-                GraphicsPath mPath = new GraphicsPath();
-                mPath.AddRectangle(baseRect);
-                mPath.CloseFigure();
-                return mPath;
-            }
-
-            // if the corner radius is greater than or equal to 
-            // half the width, or height (whichever is shorter) 
-            // then return a capsule instead of a lozenge 
-
-            if (radius >= (Math.Min(baseRect.Width, baseRect.Height)) / 2.0)
-                return GetCapsule(baseRect);
-
-            // create the arc for the rectangle sides and declare 
-            // a graphics path object for the drawing 
-
-            float diameter = radius * 2.0F;
-            SizeF sizeF = new SizeF(diameter, diameter);
-            RectangleF arc = new RectangleF(baseRect.Location, sizeF);
-            GraphicsPath path = new GraphicsPath();
-
-            // top left arc 
-            path.AddArc(arc, 180, 90);
-
-            // top right arc 
-            arc.X = baseRect.Right - diameter;
-            path.AddArc(arc, 270, 90);
-
-            // bottom right arc 
-            arc.Y = baseRect.Bottom - diameter;
-            path.AddArc(arc, 0, 90);
-
-            // bottom left arc
-            arc.X = baseRect.Left;
-            path.AddArc(arc, 90, 90);
-
-            path.CloseFigure();
-            return path;
-        }
-
-        private static GraphicsPath GetCapsule(RectangleF baseRect)
-        {
-            RectangleF arc;
-            GraphicsPath path = new GraphicsPath();
-
-            try
-            {
-                float diameter;
-                if (baseRect.Width > baseRect.Height)
-                {
-                    // return horizontal capsule 
-                    diameter = baseRect.Height;
-                    SizeF sizeF = new SizeF(diameter, diameter);
-                    arc = new RectangleF(baseRect.Location, sizeF);
-                    path.AddArc(arc, 90, 180);
-                    arc.X = baseRect.Right - diameter;
-                    path.AddArc(arc, 270, 180);
-                }
-                else if (baseRect.Width < baseRect.Height)
-                {
-                    // return vertical capsule 
-                    diameter = baseRect.Width;
-                    SizeF sizeF = new SizeF(diameter, diameter);
-                    arc = new RectangleF(baseRect.Location, sizeF);
-                    path.AddArc(arc, 180, 180);
-                    arc.Y = baseRect.Bottom - diameter;
-                    path.AddArc(arc, 0, 180);
-                }
-                else
-                {
-                    // return circle 
-                    path.AddEllipse(baseRect);
-                }
-            }
-            catch
-            {
-                path.AddEllipse(baseRect);
-            }
-            finally
-            {
-                path.CloseFigure();
-            }
-
-            return path;
-        }
         #endregion
         // */
         #endregion

@@ -8,7 +8,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
     /// </summary>
     public abstract class VS2013ThemeBase : ThemeBase
     {
-        public VS2013ThemeBase(byte[] resources)
+        protected VS2013ThemeBase(byte[] resources)
         {
             ColorPalette = new DockPanelColorPalette(new VS2012PaletteFactory(resources));
             Skin = new DockPanelSkin();

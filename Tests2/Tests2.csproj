@@ -4,8 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <RootNamespace>Tests2</RootNamespace>
     <AssemblyName>Tests2</AssemblyName>
     <ApplicationIcon />

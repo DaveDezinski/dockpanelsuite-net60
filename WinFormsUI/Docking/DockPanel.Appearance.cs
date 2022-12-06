@@ -15,13 +15,13 @@
             get { return null;  }
         }
 
-        private ThemeBase m_dockPanelTheme = new DefaultTheme();
+        private ThemeBase _dockPanelTheme = new DefaultTheme();
 
         [LocalizedCategory("Category_Docking")]
         [LocalizedDescription("DockPanel_DockPanelTheme")]
         public ThemeBase Theme
         {
-            get { return m_dockPanelTheme; }
+            get { return _dockPanelTheme; }
             set
             {
                 if (value == null)
@@ -29,15 +29,15 @@
                     return;
                 }
 
-                if (m_dockPanelTheme.GetType() == value.GetType())
+                if (_dockPanelTheme.GetType() == value.GetType())
                 {
                     return;
                 }
 
-                m_dockPanelTheme?.CleanUp(this);
-                m_dockPanelTheme = value;
-                m_dockPanelTheme.ApplyTo(this);
-                m_dockPanelTheme.PostApply(this);
+                _dockPanelTheme?.CleanUp(this);
+                _dockPanelTheme = value;
+                _dockPanelTheme.ApplyTo(this);
+                _dockPanelTheme.PostApply(this);
             }
         }
     }

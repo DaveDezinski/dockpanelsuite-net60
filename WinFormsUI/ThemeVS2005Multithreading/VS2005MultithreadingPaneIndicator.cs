@@ -9,16 +9,16 @@ namespace WeifenLuo.WinFormsUI.Docking
     [ToolboxItem(false)]
     internal class VS2005MultithreadingPaneIndicator : PictureBox, DockPanel.IPaneIndicator
     {
-        private Bitmap _bitmapPaneDiamond;
-        private Bitmap _bitmapPaneDiamondLeft;
-        private Bitmap _bitmapPaneDiamondRight;
-        private Bitmap _bitmapPaneDiamondTop;
-        private Bitmap _bitmapPaneDiamondBottom;
-        private Bitmap _bitmapPaneDiamondFill;
-        private Bitmap _bitmapPaneDiamondHotSpot;
-        private Bitmap _bitmapPaneDiamondHotSpotIndex;
+        private readonly Bitmap _bitmapPaneDiamond;
+        private readonly Bitmap _bitmapPaneDiamondLeft;
+        private readonly Bitmap _bitmapPaneDiamondRight;
+        private readonly Bitmap _bitmapPaneDiamondTop;
+        private readonly Bitmap _bitmapPaneDiamondBottom;
+        private readonly Bitmap _bitmapPaneDiamondFill;
+        private readonly Bitmap _bitmapPaneDiamondHotSpot;
+        private readonly Bitmap _bitmapPaneDiamondHotSpotIndex;
 
-        private static DockPanel.HotSpotIndex[] _hotSpots = new[]
+        private static readonly DockPanel.HotSpotIndex[] _hotSpots = new[]
         {
                 new DockPanel.HotSpotIndex(1, 0, DockStyle.Top),
                 new DockPanel.HotSpotIndex(0, 1, DockStyle.Left),
@@ -27,11 +27,13 @@ namespace WeifenLuo.WinFormsUI.Docking
                 new DockPanel.HotSpotIndex(1, 2, DockStyle.Bottom)
             };
 
-        private GraphicsPath _displayingGraphicsPath;
+        private readonly GraphicsPath _displayingGraphicsPath;
+
+        private readonly object lockObj = new();
 
         public VS2005MultithreadingPaneIndicator()
         {
-            lock (typeof(Resources))
+            lock (lockObj)
             {
                 _bitmapPaneDiamond = (Bitmap)Resources.DockIndicator_PaneDiamond.Clone();
                 _bitmapPaneDiamondLeft = (Bitmap)Resources.DockIndicator_PaneDiamond_Left.Clone();
@@ -73,24 +75,24 @@ namespace WeifenLuo.WinFormsUI.Docking
             return DockStyle.None;
         }
 
-        private DockStyle m_status = DockStyle.None;
+        private DockStyle _status = DockStyle.None;
         public DockStyle Status
         {
-            get { return m_status; }
+            get { return _status; }
             set
             {
-                m_status = value;
-                if (m_status == DockStyle.None)
+                _status = value;
+                if (_status == DockStyle.None)
                     Image = _bitmapPaneDiamond;
-                else if (m_status == DockStyle.Left)
+                else if (_status == DockStyle.Left)
                     Image = _bitmapPaneDiamondLeft;
-                else if (m_status == DockStyle.Right)
+                else if (_status == DockStyle.Right)
                     Image = _bitmapPaneDiamondRight;
-                else if (m_status == DockStyle.Top)
+                else if (_status == DockStyle.Top)
                     Image = _bitmapPaneDiamondTop;
-                else if (m_status == DockStyle.Bottom)
+                else if (_status == DockStyle.Bottom)
                     Image = _bitmapPaneDiamondBottom;
-                else if (m_status == DockStyle.Fill)
+                else if (_status == DockStyle.Fill)
                     Image = _bitmapPaneDiamondFill;
             }
         }

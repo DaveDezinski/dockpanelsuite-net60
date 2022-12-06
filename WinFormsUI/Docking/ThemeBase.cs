@@ -29,26 +29,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         protected ToolStripRenderer ToolStripRenderer { get; set;}
 
-        private Dictionary<ToolStrip, KeyValuePair<ToolStripRenderMode, ToolStripRenderer>> _stripBefore
-            = new Dictionary<ToolStrip, KeyValuePair<ToolStripRenderMode, ToolStripRenderer>>();
-
-        public void ApplyTo(ToolStrip toolStrip)
-        {
-            if (toolStrip == null)
-                return;
-
-            _stripBefore[toolStrip] = new KeyValuePair<ToolStripRenderMode, ToolStripRenderer>(toolStrip.RenderMode, toolStrip.Renderer);
-            if(ToolStripRenderer != null)
-                toolStrip.Renderer = ToolStripRenderer;
-
-            if (Win32Helper.IsRunningOnMono)
-            {
-                foreach (var item in toolStrip.Items.OfType<ToolStripDropDownItem>())
-                {
-                    ItemResetOwnerHack(item);
-                }
-            }
-        }
+        private readonly Dictionary<ToolStrip, KeyValuePair<ToolStripRenderMode, ToolStripRenderer>> _stripBefore = new();
 
         private void ItemResetOwnerHack(ToolStripDropDownItem item)
         {
@@ -72,6 +53,24 @@ namespace WeifenLuo.WinFormsUI.Docking
         public Measures Measures { get; } = new Measures();
 
         public bool ShowAutoHideContentOnHover { get; protected set; } = true;
+
+        public void ApplyTo(ToolStrip toolStrip)
+        {
+            if (toolStrip == null)
+                return;
+
+            _stripBefore[toolStrip] = new KeyValuePair<ToolStripRenderMode, ToolStripRenderer>(toolStrip.RenderMode, toolStrip.Renderer);
+            if (ToolStripRenderer != null)
+                toolStrip.Renderer = ToolStripRenderer;
+
+            if (Win32Helper.IsRunningOnMono)
+            {
+                foreach (var item in toolStrip.Items.OfType<ToolStripDropDownItem>())
+                {
+                    ItemResetOwnerHack(item);
+                }
+            }
+        }
 
         public void ApplyTo(DockPanel dockPanel)
         {
@@ -166,24 +165,18 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public static byte[] Decompress(byte[] fileToDecompress)
         {
-            using (MemoryStream originalFileStream = new MemoryStream(fileToDecompress))
+            using MemoryStream originalFileStream = new(fileToDecompress);
+            using MemoryStream decompressedFileStream = new();
+            using GZipStream decompressionStream = new(originalFileStream, CompressionMode.Decompress);
+            //Copy the decompression stream into the output file.
+            byte[] buffer = new byte[4096];
+            int numRead;
+            while ((numRead = decompressionStream.Read(buffer, 0, buffer.Length)) != 0)
             {
-                using (MemoryStream decompressedFileStream = new MemoryStream())
-                {
-                    using (GZipStream decompressionStream = new GZipStream(originalFileStream, CompressionMode.Decompress))
-                    {
-                        //Copy the decompression stream into the output file.
-                        byte[] buffer = new byte[4096];
-                        int numRead;
-                        while ((numRead = decompressionStream.Read(buffer, 0, buffer.Length)) != 0)
-                        {
-                            decompressedFileStream.Write(buffer, 0, numRead);
-                        }
-
-                        return decompressedFileStream.ToArray();
-                    }
-                }
+                decompressedFileStream.Write(buffer, 0, numRead);
             }
+
+            return decompressedFileStream.ToArray();
         }
     }
 }

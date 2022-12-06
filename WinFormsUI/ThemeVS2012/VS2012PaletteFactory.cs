@@ -9,7 +9,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2012
     public class VS2012PaletteFactory : IPaletteFactory
     {
         private const string Env = "Environment";
-        private XDocument _xml;
+        private readonly XDocument _xml;
 
         public VS2012PaletteFactory(byte[] file)
         {

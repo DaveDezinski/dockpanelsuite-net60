@@ -6,24 +6,24 @@ namespace WeifenLuo.WinFormsUI.Docking
 {
     public sealed class NestedPaneCollection : ReadOnlyCollection<DockPane>
     {
-        private INestedPanesContainer m_container;
-        private VisibleNestedPaneCollection m_visibleNestedPanes;
+        private readonly INestedPanesContainer _container;
+        private readonly VisibleNestedPaneCollection _visibleNestedPanes;
 
         internal NestedPaneCollection(INestedPanesContainer container)
             : base(new List<DockPane>())
         {
-            m_container = container;
-            m_visibleNestedPanes = new VisibleNestedPaneCollection(this);
+            _container = container;
+            _visibleNestedPanes = new VisibleNestedPaneCollection(this);
         }
 
         public INestedPanesContainer Container
         {
-            get	{	return m_container;	}
+            get	{	return _container;	}
         }
         
         public VisibleNestedPaneCollection VisibleNestedPanes
         {
-            get	{	return m_visibleNestedPanes;	}
+            get	{	return _visibleNestedPanes;	}
         }
 
         public DockState DockState
@@ -42,11 +42,9 @@ namespace WeifenLuo.WinFormsUI.Docking
                 return;
 
             NestedPaneCollection oldNestedPanes = (pane.NestedPanesContainer == null) ? null : pane.NestedPanesContainer.NestedPanes;
-            if (oldNestedPanes != null)
-                oldNestedPanes.InternalRemove(pane);
+            oldNestedPanes?.InternalRemove(pane);
             Items.Add(pane);
-            if (oldNestedPanes != null)
-                oldNestedPanes.CheckFloatWindowDispose();
+            oldNestedPanes?.CheckFloatWindowDispose();
         }
 
         private void CheckFloatWindowDispose()

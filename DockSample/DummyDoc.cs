@@ -14,17 +14,17 @@ namespace DockSample
             DockAreas = DockAreas.Document | DockAreas.Float;
         }
 
-        private string m_fileName = string.Empty;
+        private string _fileName = string.Empty;
         public string FileName
         {
-            get	{	return m_fileName;	}
+            get	{	return _fileName;	}
             set
             {
                 if (value != string.Empty)
                 {
                     Stream s = new FileStream(value, FileMode.Open);
 
-                    FileInfo efInfo = new FileInfo(value);
+                    FileInfo efInfo = new(value);
 
                     string fext = efInfo.Extension.ToUpper();
 
@@ -35,7 +35,7 @@ namespace DockSample
                     s.Close();
                 }
 
-                m_fileName = value;
+                _fileName = value;
                 this.ToolTipText = value;
             }
         }
@@ -43,14 +43,14 @@ namespace DockSample
         // workaround of RichTextbox control's bug:
         // If load file before the control showed, all the text format will be lost
         // re-load the file after it get showed.
-        private bool m_resetText = true;
+        private bool _resetText = true;
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            if (m_resetText)
+            if (_resetText)
             {
-                m_resetText = false;
+                _resetText = false;
                 FileName = FileName;
             }
         }
@@ -62,12 +62,12 @@ namespace DockSample
             return GetType().ToString() + "," + FileName + "," + Text;
         }
 
-        private void menuItem2_Click(object sender, System.EventArgs e)
+        private void MenuItem2_Click(object sender, System.EventArgs e)
         {
             MessageBox.Show("This is to demostrate menu item has been successfully merged into the main form. Form Text=" + Text);
         }
 
-        private void menuItemCheckTest_Click(object sender, System.EventArgs e)
+        private void MenuItemCheckTest_Click(object sender, System.EventArgs e)
         {
             menuItemCheckTest.Checked = !menuItemCheckTest.Checked;
         }

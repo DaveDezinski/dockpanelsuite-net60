@@ -18,15 +18,15 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
         [ToolboxItem(false)]
         internal class VS2005PaneIndicator : PictureBox, IPaneIndicator
         {
-            private static Bitmap _bitmapPaneDiamond = Resources.DockIndicator_PaneDiamond;
-            private static Bitmap _bitmapPaneDiamondLeft = Resources.DockIndicator_PaneDiamond_Left;
-            private static Bitmap _bitmapPaneDiamondRight = Resources.DockIndicator_PaneDiamond_Right;
-            private static Bitmap _bitmapPaneDiamondTop = Resources.DockIndicator_PaneDiamond_Top;
-            private static Bitmap _bitmapPaneDiamondBottom = Resources.DockIndicator_PaneDiamond_Bottom;
-            private static Bitmap _bitmapPaneDiamondFill = Resources.DockIndicator_PaneDiamond_Fill;
-            private static Bitmap _bitmapPaneDiamondHotSpot = Resources.DockIndicator_PaneDiamond_HotSpot;
-            private static Bitmap _bitmapPaneDiamondHotSpotIndex = Resources.DockIndicator_PaneDiamond_HotSpotIndex;
-            private static HotSpotIndex[] _hotSpots =
+            private readonly static Bitmap _bitmapPaneDiamond = Resources.DockIndicator_PaneDiamond;
+            private readonly static Bitmap _bitmapPaneDiamondLeft = Resources.DockIndicator_PaneDiamond_Left;
+            private readonly static Bitmap _bitmapPaneDiamondRight = Resources.DockIndicator_PaneDiamond_Right;
+            private readonly static Bitmap _bitmapPaneDiamondTop = Resources.DockIndicator_PaneDiamond_Top;
+            private readonly static Bitmap _bitmapPaneDiamondBottom = Resources.DockIndicator_PaneDiamond_Bottom;
+            private readonly static Bitmap _bitmapPaneDiamondFill = Resources.DockIndicator_PaneDiamond_Fill;
+            private readonly static Bitmap _bitmapPaneDiamondHotSpot = Resources.DockIndicator_PaneDiamond_HotSpot;
+            private readonly static Bitmap _bitmapPaneDiamondHotSpotIndex = Resources.DockIndicator_PaneDiamond_HotSpotIndex;
+            private readonly static HotSpotIndex[] _hotSpots =
             {
                 new HotSpotIndex(1, 0, DockStyle.Top),
                 new HotSpotIndex(0, 1, DockStyle.Left),
@@ -35,7 +35,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
                 new HotSpotIndex(1, 2, DockStyle.Bottom)
             };
 
-            private GraphicsPath _displayingGraphicsPath = DrawHelper.CalculateGraphicsPathFromBitmap(_bitmapPaneDiamond);
+            private readonly GraphicsPath _displayingGraphicsPath = DrawHelper.CalculateGraphicsPathFromBitmap(_bitmapPaneDiamond);
 
             public VS2005PaneIndicator()
             {
@@ -67,24 +67,24 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2005
                 return DockStyle.None;
             }
 
-            private DockStyle m_status = DockStyle.None;
+            private DockStyle _status = DockStyle.None;
             public DockStyle Status
             {
-                get { return m_status; }
+                get { return _status; }
                 set
                 {
-                    m_status = value;
-                    if (m_status == DockStyle.None)
+                    _status = value;
+                    if (_status == DockStyle.None)
                         Image = _bitmapPaneDiamond;
-                    else if (m_status == DockStyle.Left)
+                    else if (_status == DockStyle.Left)
                         Image = _bitmapPaneDiamondLeft;
-                    else if (m_status == DockStyle.Right)
+                    else if (_status == DockStyle.Right)
                         Image = _bitmapPaneDiamondRight;
-                    else if (m_status == DockStyle.Top)
+                    else if (_status == DockStyle.Top)
                         Image = _bitmapPaneDiamondTop;
-                    else if (m_status == DockStyle.Bottom)
+                    else if (_status == DockStyle.Bottom)
                         Image = _bitmapPaneDiamondBottom;
-                    else if (m_status == DockStyle.Fill)
+                    else if (_status == DockStyle.Fill)
                         Image = _bitmapPaneDiamondFill;
                 }
             }
